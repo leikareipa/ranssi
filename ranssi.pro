@@ -11,11 +11,15 @@ MOC_DIR = generated_files
 UI_DIR = generated_files
 
 SOURCES += src/main.cpp\
-           src/gui/qt/windows/mainwindow.cpp
+           src/gui/qt/windows/mainwindow.cpp \
+           src/gui/qt/subclasses/QTextEdit_text_field.cpp
 
-HEADERS += src/gui/qt/windows/mainwindow.h
+HEADERS += src/gui/qt/windows/mainwindow.h \
+           src/gui/qt/subclasses/QTextEdit_text_field.h
 
 FORMS += src/gui/qt/windows/ui/mainwindow.ui
+
+INCLUDEPATH += $$PWD/src/gui/qt/subclasses
 
 # For GCC/Clang/MinGW.
 QMAKE_CXXFLAGS += -g

@@ -5,9 +5,6 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    // Disable cursor blink.
-    a.setCursorFlashTime(0);
-
     MainWindow w;
     w.show();
 

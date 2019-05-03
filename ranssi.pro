@@ -12,10 +12,12 @@ UI_DIR = generated_files
 
 SOURCES += src/main.cpp\
            src/gui/qt/windows/mainwindow.cpp \
-           src/gui/qt/subclasses/QTextEdit_text_field.cpp
+           src/gui/qt/subclasses/QTextEdit_text_field.cpp \
+    src/gui/qt/subclasses/QWidget_text_field_overlay.cpp
 
 HEADERS += src/gui/qt/windows/mainwindow.h \
-           src/gui/qt/subclasses/QTextEdit_text_field.h
+           src/gui/qt/subclasses/QTextEdit_text_field.h \
+    src/gui/qt/subclasses/QWidget_text_field_overlay.h
 
 FORMS += src/gui/qt/windows/ui/mainwindow.ui
 

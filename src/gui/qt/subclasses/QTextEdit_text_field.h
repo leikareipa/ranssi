@@ -3,6 +3,8 @@
 
 #include <QTextEdit>
 
+class QPaintEvent;
+
 class TextField : public QTextEdit
 {
     Q_OBJECT

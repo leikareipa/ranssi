@@ -28,7 +28,7 @@
      <number>0</number>
     </property>
     <item>
-     <widget class="TextField" name="textEdit"/>
+     <widget class="TextEditor" name="textEdit" native="true"/>
     </item>
    </layout>
   </widget>
@@ -36,9 +36,9 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>TextField</class>
-   <extends>QTextEdit</extends>
-   <header>QTextEdit_text_field.h</header>
+   <class>TextEditor</class>
+   <extends>QWidget</extends>
+   <header>QTextEdit_text_editor.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

@@ -1,5 +1,5 @@
-#ifndef TEXT_FIELD_OVERLAY_H
-#define TEXT_FIELD_OVERLAY_H
+#ifndef TEXT_EDITOR_OVERLAY_H
+#define TEXT_EDITOR_OVERLAY_H
 
 #include <QWidget>
 
@@ -7,13 +7,13 @@ class QPaintEvent;
 class QPixmap;
 class QRect;
 
-class TextFieldOverlay : public QWidget
+class TextEditorOverlay : public QWidget
 {
     Q_OBJECT
 
 public:
-    TextFieldOverlay(QWidget *parent = 0);
-    ~TextFieldOverlay();
+    TextEditorOverlay(QWidget *parent = 0);
+    ~TextEditorOverlay();
 
     void set_cursor_rect(const QRect &cursorRect);
 

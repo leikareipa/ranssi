@@ -1,11 +1,11 @@
 #include <QPainter>
 #include <QDebug>
 #include <QRect>
-#include "src/gui/qt/subclasses/QWidget_text_field_overlay.h"
+#include "src/gui/qt/subclasses/QWidget_text_editor_overlay.h"
 
 static const uint CURSOR_WIDTH = 9;
 
-TextFieldOverlay::TextFieldOverlay(QWidget *parent) : QWidget(parent)
+TextEditorOverlay::TextEditorOverlay(QWidget *parent) : QWidget(parent)
 {
     // The overlay is expected to sit on top of the text edit widget, but we
     // don't want it to steal the edit widget's mouse interaction.
@@ -14,26 +14,26 @@ TextFieldOverlay::TextFieldOverlay(QWidget *parent) : QWidget(parent)
     return;
 }
 
-TextFieldOverlay::~TextFieldOverlay()
+TextEditorOverlay::~TextEditorOverlay()
 {
     return;
 }
 
-void TextFieldOverlay::set_cursor_rect(const QRect &cursorRect)
+void TextEditorOverlay::set_cursor_rect(const QRect &cursorRect)
 {
     this->cursorRect = cursorRect;
 
     return;
 }
 
-void TextFieldOverlay::set_background_pixmap(const QPixmap &backgroundPixmap)
+void TextEditorOverlay::set_background_pixmap(const QPixmap &backgroundPixmap)
 {
     this->backgroundPixmap = backgroundPixmap;
 
     return;
 }
 
-void TextFieldOverlay::paintEvent(QPaintEvent *)
+void TextEditorOverlay::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
 

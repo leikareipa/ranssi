@@ -1,6 +1,6 @@
 #include <QPixmap>
-#include "src/gui/qt/subclasses/QWidget_text_field_overlay.h"
-#include "src/gui/qt/subclasses/QTextEdit_text_field.h"
+#include "src/gui/qt/subclasses/QWidget_text_editor_overlay.h"
+#include "src/gui/qt/subclasses/QTextEdit_text_editor.h"
 #include "src/gui/qt/windows/mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -14,7 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
     /// TODO. Temprary. In the future, better integrate the overlay into the code
     /// and the parent widget's layout.
     {
-        TextFieldOverlay *overlay = new TextFieldOverlay(this);
+        TextEditorOverlay *overlay = new TextEditorOverlay(this);
         overlay->resize(this->size());
 
         {
@@ -25,13 +25,13 @@ MainWindow::MainWindow(QWidget *parent) :
                 overlay->update();
             };
 
-            connect(ui->textEdit, &TextField::cursorPositionChanged, this,
+            connect(ui->textEdit, &TextEditor::cursorPositionChanged, this,
                     [=]{ update_overlay(); });
 
-            connect(ui->textEdit, &TextField::textChanged, this,
+            connect(ui->textEdit, &TextEditor::textChanged, this,
                     [=]{ update_overlay(); });
 
-            connect(ui->textEdit, &TextField::selectionChanged, this,
+            connect(ui->textEdit, &TextEditor::selectionChanged, this,
                     [=]{ update_overlay(); });
         }
     }

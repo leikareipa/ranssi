@@ -1,9 +1,9 @@
 #include <QTextEdit>
 #include <QPainter>
 #include <QDebug>
-#include "src/gui/qt/subclasses/QTextEdit_text_field.h"
+#include "src/gui/qt/subclasses/QTextEdit_text_editor.h"
 
-TextField::TextField(QWidget *parent) : QTextEdit(parent)
+TextEditor::TextEditor(QWidget *parent) : QTextEdit(parent)
 {
     /// Temporary styling.
     this->setCursorWidth(0);
@@ -13,7 +13,7 @@ TextField::TextField(QWidget *parent) : QTextEdit(parent)
     return;
 }
 
-TextField::~TextField()
+TextEditor::~TextEditor()
 {
     return;
 }

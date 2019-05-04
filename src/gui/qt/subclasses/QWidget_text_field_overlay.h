@@ -4,6 +4,7 @@
 #include <QWidget>
 
 class QPaintEvent;
+class QPixmap;
 class QRect;
 
 class TextFieldOverlay : public QWidget
@@ -16,11 +17,14 @@ public:
 
     void set_cursor_rect(const QRect &cursorRect);
 
+    void set_background_pixmap(const QPixmap &backgroundPixmap);
+
 protected:
     void paintEvent(QPaintEvent *);
 
 private:
     QRect cursorRect;
+    QPixmap backgroundPixmap;
 };
 
 #endif

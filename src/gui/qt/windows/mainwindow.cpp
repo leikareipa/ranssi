@@ -1,4 +1,6 @@
 #include <QPixmap>
+#include <QDebug>
+#include <QTimer>
 #include "src/gui/qt/subclasses/QWidget_text_editor_overlay.h"
 #include "src/gui/qt/subclasses/QTextEdit_text_editor.h"
 #include "src/gui/qt/windows/mainwindow.h"
@@ -15,25 +17,21 @@ MainWindow::MainWindow(QWidget *parent) :
     /// and the parent widget's layout.
     {
         TextEditorOverlay *overlay = new TextEditorOverlay(this);
-        overlay->resize(this->size());
 
+        auto refresh_overlay = [=]
         {
-            auto update_overlay = [=]
-            {
-                overlay->set_cursor_rect(ui->textEdit->cursorRect());
-                overlay->set_background_pixmap(ui->textEdit->grab());
-                overlay->update();
-            };
+            overlay->resize(this->size());
+            overlay->set_cursor_rect(ui->textEdit->cursorRect());
+            overlay->set_background_pixmap(ui->textEdit->grab());
+            overlay->update();
+        };
 
-            connect(ui->textEdit, &TextEditor::cursorPositionChanged, this,
-                    [=]{ update_overlay(); });
+        connect(ui->textEdit, &TextEditor::cursorPositionChanged, this, [=]{ refresh_overlay(); });
+        connect(ui->textEdit, &TextEditor::textChanged, this, [=]{ refresh_overlay(); });
 
-            connect(ui->textEdit, &TextEditor::textChanged, this,
-                    [=]{ update_overlay(); });
-
-            connect(ui->textEdit, &TextEditor::selectionChanged, this,
-                    [=]{ update_overlay(); });
-        }
+        /// FIXME. Temporary hack. Without this, the text cursor position in the
+        /// overlay is incorrect on startup.
+        QTimer::singleShot(0, [=]{ refresh_overlay(); });
     }
 
     return;

@@ -1,9 +1,9 @@
 #include <QPainter>
 #include <QDebug>
 #include <QRect>
-#include "src/gui/qt/subclasses/QWidget_text_editor_overlay.h"
+#include "gui/qt/subclasses/QWidget_text_editor_overlay.h"
 
-static const uint CURSOR_WIDTH = 9;
+static const uint TEXT_CURSOR_WIDTH = 9;
 
 TextEditorOverlay::TextEditorOverlay(QWidget *parent) : QWidget(parent)
 {
@@ -37,10 +37,11 @@ void TextEditorOverlay::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
 
+
     // Draw an inverted rectangle where the text editor's cursor is.
     QRect fullSizeCursorRect = QRect(this->cursorRect.left()+1,
                                this->cursorRect.top()+1,
-                               CURSOR_WIDTH,
+                               TEXT_CURSOR_WIDTH,
                                this->cursorRect.height()-1);
     QImage cursorImage = this->backgroundPixmap.copy(fullSizeCursorRect).toImage();
     cursorImage.invertPixels();

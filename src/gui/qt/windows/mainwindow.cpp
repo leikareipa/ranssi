@@ -1,3 +1,9 @@
+/*
+ * 2019 Tarpeeksi Hyvae Soft /
+ * ranssi
+ *
+ */
+
 #include <QPixmap>
 #include <QDebug>
 #include <QTimer>

@@ -1,3 +1,9 @@
+/*
+ * 2019 Tarpeeksi Hyvae Soft /
+ * ranssi
+ *
+ */
+
 #include <QApplication>
 #include "gui/qt/windows/mainwindow.h"
 #include "common.h"

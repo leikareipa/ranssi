@@ -1,3 +1,9 @@
+/*
+ * 2019 Tarpeeksi Hyvae Soft /
+ * ranssi
+ *
+ */
+
 #ifndef TEXT_EDITOR_OVERLAY_H
 #define TEXT_EDITOR_OVERLAY_H
 

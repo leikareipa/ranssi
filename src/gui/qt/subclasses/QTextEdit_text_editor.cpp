@@ -1,3 +1,9 @@
+/*
+ * 2019 Tarpeeksi Hyvae Soft /
+ * ranssi
+ *
+ */
+
 #include <QTextBlock>
 #include <QTextEdit>
 #include <QPainter>

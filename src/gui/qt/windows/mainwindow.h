@@ -1,3 +1,9 @@
+/*
+ * 2019 Tarpeeksi Hyvae Soft /
+ * ranssi
+ *
+ */
+
 #ifndef MAIN_WINDOW_H
 #define MAIN_WINDOW_H
 

@@ -1,3 +1,9 @@
+/*
+ * 2019 Tarpeeksi Hyvae Soft /
+ * ranssi
+ *
+ */
+
 #ifndef TEXT_EDITOR_H
 #define TEXT_EDITOR_H
 
@@ -8,7 +14,6 @@ class QPaintEvent;
 class TextEditor : public QTextEdit
 {
     Q_OBJECT
-
 
 public:
     TextEditor(QWidget *parent = 0);

@@ -15,6 +15,9 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
+    <property name="spacing">
+     <number>0</number>
+    </property>
     <property name="leftMargin">
      <number>0</number>
     </property>
@@ -28,6 +31,28 @@
      <number>0</number>
     </property>
     <item>
+     <widget class="WavDisplay" name="wavDisplay" native="true">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>55</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>55</height>
+       </size>
+      </property>
+     </widget>
+    </item>
+    <item>
      <widget class="TextEditor" name="textEdit" native="true"/>
     </item>
    </layout>
@@ -39,6 +64,12 @@
    <class>TextEditor</class>
    <extends>QWidget</extends>
    <header>QTextEdit_text_editor.h</header>
+  </customwidget>
+  <customwidget>
+   <class>WavDisplay</class>
+   <extends>QWidget</extends>
+   <header>QWidget_wav_display.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

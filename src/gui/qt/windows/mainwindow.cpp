@@ -28,7 +28,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
         auto refresh_overlay = [=]
         {
-            overlay->resize(this->size());
+            overlay->move(ui->textEdit->pos());
+            overlay->resize(ui->textEdit->size());
             overlay->set_cursor_rect(ui->textEdit->cursorRect());
             overlay->set_background_pixmap(ui->textEdit->grab());
             overlay->update();

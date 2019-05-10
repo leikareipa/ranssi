@@ -14,13 +14,15 @@ SOURCES += src/main.cpp\
            src/gui/qt/windows/mainwindow.cpp \
            src/gui/qt/widgets/QTextEdit_text_editor.cpp \
            src/gui/qt/widgets/QWidget_text_editor_overlay.cpp \
-           src/wav/wav.cpp
+           src/wav/wav.cpp \
+           src/gui/qt/widgets/QWidget_wav_display.cpp
 
 HEADERS += src/gui/qt/windows/mainwindow.h \
            src/gui/qt/widgets/QTextEdit_text_editor.h \
            src/gui/qt/widgets/QWidget_text_editor_overlay.h \
            src/wav/wav.h \
-           src/common.h
+           src/common.h \
+           src/gui/qt/widgets/QWidget_wav_display.h
 
 FORMS += src/gui/qt/windows/ui/mainwindow.ui
 

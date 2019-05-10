@@ -1,13 +1,13 @@
 /*
- * Tarpeeksi Hyvae Soft 2019 /
+ * 2019 Tarpeeksi Hyvae Soft /
  * ranssi
  *
  */
 
 #include <QDataStream>
 #include <QFile>
-#include <cassert>
 #include "wav/wav.h"
+#include "common.h"
 
 wav_c::wav_c(const std::string wavFilename) :
     filename(wavFilename),
@@ -38,7 +38,7 @@ bool wav_c::is_valid(void) const
 
 std::pair<std::vector<int16_t>, int> wav_c::load_audio_data(void) const
 {
-    assert(!this->filename.empty() && "Was asked to load the contents of an unnamed WAV file. Can't do that.");
+    k_assert(!this->filename.empty(), "Was asked to load the contents of an unnamed WAV file. Can't do that.");
 
     // The discrete samples we load from the WAV file and return to our caller.
     std::vector<int16_t> samples;
@@ -134,7 +134,7 @@ std::pair<std::vector<int16_t>, int> wav_c::load_audio_data(void) const
                 {
                     // Test for this, just in case it hasn't yet been verified
                     // that we have word-sized samples.
-                    assert((blockAlign == 2) && "Expected 16-bit samples in the WAV file.");
+                    k_assert((blockAlign == 2), "Expected 16-bit samples in the WAV file.");
 
                     int16_t sampleDatum;
                     if (dataStream.readRawData((char*)&sampleDatum, 2) <= 0)

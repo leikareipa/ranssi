@@ -1,5 +1,6 @@
 #include <QApplication>
-#include "src/gui/qt/windows/mainwindow.h"
+#include "gui/qt/windows/mainwindow.h"
+#include "common.h"
 
 void test_wav(void);
 
@@ -22,10 +23,9 @@ void test_wav(void)
     // Two seconds of a 1 kHz sine wave at a rate of 44100.
     wav_c wav("test.wav");
 
-    assert(wav.is_valid() &&
-           wav.sample_rate() == 44100 &&
-           wav.samples().size() == 88200
-           && "Failed to load the WAV file.");
+    k_assert((wav.is_valid() &&
+              wav.sample_rate() == 44100 &&
+              wav.samples().size() == 88200), "Failed to load the WAV file.");
 
     return;
 }

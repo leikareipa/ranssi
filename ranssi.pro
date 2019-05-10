@@ -19,7 +19,8 @@ SOURCES += src/main.cpp\
 HEADERS += src/gui/qt/windows/mainwindow.h \
            src/gui/qt/subclasses/QTextEdit_text_editor.h \
            src/gui/qt/subclasses/QWidget_text_editor_overlay.h \
-           src/wav/wav.h
+           src/wav/wav.h \
+           src/common.h
 
 FORMS += src/gui/qt/windows/ui/mainwindow.ui
 

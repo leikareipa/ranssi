@@ -20,6 +20,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    this->setStyleSheet("#MainWindow { background-color: #1e1e1e; }");
+
     // Set up the text editor's overlay.
     /// TODO. Temprary. In the future, better integrate the overlay into the code
     /// and the parent widget's layout.

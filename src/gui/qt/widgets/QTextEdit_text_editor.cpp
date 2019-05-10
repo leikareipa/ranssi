@@ -40,7 +40,13 @@ TextEditor::TextEditor(QWidget *parent) : QTextEdit(parent)
     /// Temporary styling.
     this->setCursorWidth(0);
     this->setFont(QFont("Ubuntu Mono", 13));
-    this->setStyleSheet("selection-background-color: gray; selection-color: lightgray;");
+    this->setStyleSheet("QTextEdit {"
+                        "  selection-background-color: gray;"
+                        "  selection-color: lightgray;"
+                        "  background-color: #1e1e1e;"
+                        "  color: #a6a6a6;"
+                        "  border: none;"
+                        "}");
 
     // Tab will be used for word completion etc.
     this->setTabChangesFocus(false);

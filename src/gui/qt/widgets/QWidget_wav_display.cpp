@@ -11,6 +11,8 @@
 
 WavDisplay::WavDisplay(QWidget *parent) : QWidget(parent)
 {
+    this->setStyleSheet("border: none;");
+
     return;
 }
 
@@ -23,7 +25,7 @@ void WavDisplay::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
 
-    painter.fillRect(this->rect(), QColor("green"));
+    painter.fillRect(this->rect(), QColor("#464646"));
 
     return;
 }

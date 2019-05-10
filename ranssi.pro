@@ -12,19 +12,19 @@ UI_DIR = generated_files
 
 SOURCES += src/main.cpp\
            src/gui/qt/windows/mainwindow.cpp \
-           src/gui/qt/subclasses/QTextEdit_text_editor.cpp \
-           src/gui/qt/subclasses/QWidget_text_editor_overlay.cpp \
+           src/gui/qt/widgets/QTextEdit_text_editor.cpp \
+           src/gui/qt/widgets/QWidget_text_editor_overlay.cpp \
            src/wav/wav.cpp
 
 HEADERS += src/gui/qt/windows/mainwindow.h \
-           src/gui/qt/subclasses/QTextEdit_text_editor.h \
-           src/gui/qt/subclasses/QWidget_text_editor_overlay.h \
+           src/gui/qt/widgets/QTextEdit_text_editor.h \
+           src/gui/qt/widgets/QWidget_text_editor_overlay.h \
            src/wav/wav.h \
            src/common.h
 
 FORMS += src/gui/qt/windows/ui/mainwindow.ui
 
-INCLUDEPATH += $$PWD/src/gui/qt/subclasses \
+INCLUDEPATH += $$PWD/src/gui/qt/widgets \
                $$PWD/src
 
 # For GCC/Clang/MinGW.

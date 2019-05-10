@@ -30,7 +30,7 @@
 #include <QTextEdit>
 #include <QPainter>
 #include <QDebug>
-#include "gui/qt/subclasses/QTextEdit_text_editor.h"
+#include "gui/qt/widgets/QTextEdit_text_editor.h"
 
 // Vertical spacing between individual blocks of text.
 static const uint BLOCK_VERTICAL_MARGIN = 20;

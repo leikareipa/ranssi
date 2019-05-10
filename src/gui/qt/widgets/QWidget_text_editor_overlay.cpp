@@ -14,7 +14,7 @@
 #include <QPainter>
 #include <QDebug>
 #include <QRect>
-#include "gui/qt/subclasses/QWidget_text_editor_overlay.h"
+#include "gui/qt/widgets/QWidget_text_editor_overlay.h"
 
 static const uint TEXT_CURSOR_WIDTH = 9;
 

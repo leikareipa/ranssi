@@ -9,8 +9,8 @@
 #include <QPixmap>
 #include <QDebug>
 #include <QTimer>
-#include "src/gui/qt/subclasses/QWidget_text_editor_overlay.h"
-#include "src/gui/qt/subclasses/QTextEdit_text_editor.h"
+#include "src/gui/qt/widgets/QWidget_text_editor_overlay.h"
+#include "src/gui/qt/widgets/QTextEdit_text_editor.h"
 #include "src/gui/qt/windows/mainwindow.h"
 #include "ui_mainwindow.h"
 

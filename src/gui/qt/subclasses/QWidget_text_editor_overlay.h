@@ -9,10 +9,6 @@
 
 #include <QWidget>
 
-class QPaintEvent;
-class QPixmap;
-class QRect;
-
 class TextEditorOverlay : public QWidget
 {
     Q_OBJECT

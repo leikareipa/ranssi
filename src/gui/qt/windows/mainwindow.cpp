@@ -2,6 +2,8 @@
  * 2019 Tarpeeksi Hyvae Soft /
  * ranssi
  *
+ * Ranssi is a minimalist and to-the-point transcription app.
+ *
  */
 
 #include <QPixmap>

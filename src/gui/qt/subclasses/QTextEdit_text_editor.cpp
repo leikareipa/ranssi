@@ -2,6 +2,28 @@
  * 2019 Tarpeeksi Hyvae Soft /
  * ranssi
  *
+ * Ranssi's main text editor widget. A subclass of QTextEdit providing the means
+ * to enter and edit text; it's where the user types in their transcription.
+ *
+ * Text entered into the widget is grouped into blocks (QTextBlock), where each
+ * block presents an utterance of a particular speaker. For example, the following
+ * exchange between Q and A consists of two blocks:
+ *
+ *      Q: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+ *         eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+ *         enim ad minim veniam, quis nostrud exercitation ullamco laboris
+ *         nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
+ *         in reprehenderit in voluptate velit esse cillum dolore eu fugiat
+ *         nulla pariatur?
+ *
+ *      A: Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
+ *         officia deserunt mollit anim id est laborum.
+ *
+ * Blocks are thus in effect paragraphs, potentially spanning multiple lines of
+ * text when displayed in the widget but nonetheless being conceptually discrete
+ * units that are also visually separated from each other (by e.g. greater
+ * vertical whitespace than between lines within blocks).
+ *
  */
 
 #include <QTextBlock>

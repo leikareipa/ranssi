@@ -9,8 +9,6 @@
 
 #include <QTextEdit>
 
-class QPaintEvent;
-
 class TextEditor : public QTextEdit
 {
     Q_OBJECT

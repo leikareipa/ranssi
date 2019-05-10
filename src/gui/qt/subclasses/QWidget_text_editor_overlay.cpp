@@ -2,6 +2,13 @@
  * 2019 Tarpeeksi Hyvae Soft /
  * ranssi
  *
+ * A widget drawn on top of ranssi's main text editor widget (where the user
+ * types in their transcription) for displaying additional visual highlights,
+ * like a custom text cursor.
+ *
+ * The overlay is to be fully transparent besides the visual elements it adds,
+ * and likewise transparent for user input, e.g. mouse clicks.
+ *
  */
 
 #include <QPainter>
@@ -25,6 +32,8 @@ TextEditorOverlay::~TextEditorOverlay()
     return;
 }
 
+// Called to communicate to the overlay, prior to repainting it, where the parent
+// text editor's cursor is.
 void TextEditorOverlay::set_cursor_rect(const QRect &cursorRect)
 {
     this->cursorRect = cursorRect;
@@ -32,6 +41,8 @@ void TextEditorOverlay::set_cursor_rect(const QRect &cursorRect)
     return;
 }
 
+// Called to communicate to the overlay, prior to repainting it, what's displayed
+// on the parent text editor.
 void TextEditorOverlay::set_background_pixmap(const QPixmap &backgroundPixmap)
 {
     this->backgroundPixmap = backgroundPixmap;
@@ -42,7 +53,6 @@ void TextEditorOverlay::set_background_pixmap(const QPixmap &backgroundPixmap)
 void TextEditorOverlay::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
-
 
     // Draw an inverted rectangle where the text editor's cursor is.
     QRect fullSizeCursorRect = QRect(this->cursorRect.left()+1,

@@ -26,23 +26,17 @@ MainWindow::MainWindow(QWidget *parent) :
     /// TODO. Temprary. In the future, better integrate the overlay into the code
     /// and the parent widget's layout.
     {
-        TextEditorOverlay *overlay = new TextEditorOverlay(this);
+        TextEditorOverlay *overlay = new TextEditorOverlay(this, ui->textEdit);
 
-        auto refresh_overlay = [=]
-        {
-            overlay->move(ui->textEdit->pos());
-            overlay->resize(ui->textEdit->size());
-            overlay->set_cursor_rect(ui->textEdit->cursorRect());
-            overlay->set_background_pixmap(ui->textEdit->grab());
-            overlay->update();
-        };
+        ui->textEdit->stackUnder(overlay);
 
-        connect(ui->textEdit, &TextEditor::cursorPositionChanged, this, [=]{ refresh_overlay(); });
-        connect(ui->textEdit, &TextEditor::textChanged, this, [=]{ refresh_overlay(); });
+        connect(ui->textEdit, &TextEditor::cursorPositionChanged, this, [=]{ overlay->update(); });
+        connect(ui->textEdit, &TextEditor::textChanged, this, [=]{ overlay->update(); });
+        connect(ui->textEdit, &TextEditor::resized, this, [=]{ overlay->update(); });
 
         /// FIXME. Temporary hack. Without this, the text cursor position in the
         /// overlay is incorrect on startup.
-        QTimer::singleShot(0, [=]{ refresh_overlay(); });
+        QTimer::singleShot(0, [=]{ overlay->update(); });
     }
 
     return;

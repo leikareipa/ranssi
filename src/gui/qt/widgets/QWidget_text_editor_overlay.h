@@ -7,26 +7,25 @@
 #ifndef TEXT_EDITOR_OVERLAY_H
 #define TEXT_EDITOR_OVERLAY_H
 
+#include <QPointer>
 #include <QWidget>
+
+class TextEditor;
 
 class TextEditorOverlay : public QWidget
 {
     Q_OBJECT
 
 public:
-    TextEditorOverlay(QWidget *parent = 0);
+    TextEditorOverlay(QWidget *parentWidget, TextEditor *textEditorWidget);
     ~TextEditorOverlay();
-
-    void set_cursor_rect(const QRect &cursorRect);
-
-    void set_background_pixmap(const QPixmap &backgroundPixmap);
 
 protected:
     void paintEvent(QPaintEvent *);
 
 private:
-    QRect cursorRect;
-    QPixmap backgroundPixmap;
+    // A pointer to the text editor for which this is an overlay.
+    QPointer<TextEditor> textEditor;
 };
 
 #endif

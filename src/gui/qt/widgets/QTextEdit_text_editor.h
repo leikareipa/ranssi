@@ -19,6 +19,11 @@ public:
 
 protected:
     bool eventFilter(QObject *, QEvent *event);
+    void resizeEvent(QResizeEvent *event);
+
+signals:
+    // Emitted when this widget is resized.
+    void resized(void);
 
 private:
     void erase_text_in_block(QTextCursor cursor);

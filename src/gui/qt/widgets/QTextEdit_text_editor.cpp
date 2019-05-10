@@ -41,8 +41,8 @@ TextEditor::TextEditor(QWidget *parent) : QTextEdit(parent)
     this->setCursorWidth(0);
     this->setFont(QFont("Ubuntu Mono", 13));
     this->setStyleSheet("QTextEdit {"
-                        "  selection-background-color: gray;"
-                        "  selection-color: lightgray;"
+                        "  selection-background-color: #a6a6a6;"
+                        "  selection-color: black;"
                         "  background-color: #1e1e1e;"
                         "  color: #a6a6a6;"
                         "  border: none;"
@@ -58,6 +58,14 @@ TextEditor::TextEditor(QWidget *parent) : QTextEdit(parent)
 
 TextEditor::~TextEditor()
 {
+    return;
+}
+
+void TextEditor::resizeEvent(QResizeEvent *event)
+{
+    emit resized();
+    QTextEdit::resizeEvent(event);
+
     return;
 }
 

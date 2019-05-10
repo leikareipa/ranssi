@@ -17,7 +17,7 @@
 #include "gui/qt/widgets/QWidget_text_editor_overlay.h"
 #include "gui/qt/widgets/QTextEdit_text_editor.h"
 
-static const uint TEXT_CURSOR_WIDTH = 9;
+static const uint TEXT_CURSOR_WIDTH = 10;
 
 TextEditorOverlay::TextEditorOverlay(QWidget *parentWidget, TextEditor *textEditorWidget) :
     QWidget(parentWidget),
@@ -26,6 +26,8 @@ TextEditorOverlay::TextEditorOverlay(QWidget *parentWidget, TextEditor *textEdit
     // The overlay is expected to sit on top of the text edit widget, but we
     // don't want it to steal the edit widget's mouse interaction.
     this->setAttribute(Qt::WA_TransparentForMouseEvents, true);
+
+    this->setFont(textEditorWidget->font());
 
     return;
 }
@@ -44,18 +46,30 @@ void TextEditorOverlay::paintEvent(QPaintEvent *)
     this->resize(textEditor->size());
 
     QPainter painter(this);
-    const QPixmap backgroundPixmap = textEditor->grab();
 
-    // Draw an inverted rectangle where the text editor's cursor is.
+    // Draw a block of color as the text cursor.
     {
-        QRect fullSizeCursorRect = QRect(textEditor->cursorRect().left()+1,
-                                         textEditor->cursorRect().top()+1,
-                                         TEXT_CURSOR_WIDTH,
-                                         textEditor->cursorRect().height()-1);
+        QRect cursorBlock = QRect(textEditor->cursorRect().left(),
+                                  textEditor->cursorRect().top(),
+                                  TEXT_CURSOR_WIDTH,
+                                  textEditor->cursorRect().height());
 
-        QImage cursorImage = backgroundPixmap.copy(fullSizeCursorRect).toImage();
-        cursorImage.invertPixels();
-        painter.drawImage(fullSizeCursorRect, cursorImage);
+        painter.setPen(QColor("transparent"));
+        painter.setBrush(QColor("#a6a6a6"));
+
+        // If the user has selected text, highlight the cursor block a little bit
+        // from the rest of the selection.
+        if (!textEditor->textCursor().selectedText().isEmpty()) painter.setBrush(QColor("#d6d6d6"));
+
+        painter.drawRect(cursorBlock);
+
+        // Redraw the character that was under the opaque cursor block.
+        const QChar charUnderCursor = textEditor->document()->characterAt(textEditor->textCursor().position());
+        if (!charUnderCursor.isNonCharacter())
+        {
+            painter.setPen(QColor("#1e1e1e"));
+            painter.drawText(cursorBlock, charUnderCursor);
+        }
     }
 
     return;

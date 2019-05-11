@@ -23,8 +23,6 @@ MainWindow::MainWindow(QWidget *parent) :
     this->setStyleSheet("#MainWindow { background-color: #1e1e1e; }");
 
     // Set up the text editor's overlay.
-    /// TODO. Temprary. In the future, better integrate the overlay into the code
-    /// and the parent widget's layout.
     {
         TextEditorOverlay *overlay = new TextEditorOverlay(this, ui->textEdit);
 
@@ -33,10 +31,6 @@ MainWindow::MainWindow(QWidget *parent) :
         connect(ui->textEdit, &TextEditor::cursorPositionChanged, this, [=]{ overlay->update(); });
         connect(ui->textEdit, &TextEditor::textChanged, this, [=]{ overlay->update(); });
         connect(ui->textEdit, &TextEditor::resized, this, [=]{ overlay->update(); });
-
-        /// FIXME. Temporary hack. Without this, the text cursor position in the
-        /// overlay is incorrect on startup.
-        QTimer::singleShot(0, [=]{ overlay->update(); });
     }
 
     return;

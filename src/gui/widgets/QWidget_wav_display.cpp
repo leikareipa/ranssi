@@ -8,8 +8,8 @@
 
 #include <QPainter>
 #include <QDebug>
-#include "gui/qt/widgets/QWidget_wav_display.h"
-#include "gui/qt/windows/mainwindow.h"
+#include "gui/widgets/QWidget_wav_display.h"
+#include "gui/windows/mainwindow.h"
 #include "wav/wav.h"
 
 WavDisplay::WavDisplay(QWidget *parent) :

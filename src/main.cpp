@@ -5,7 +5,7 @@
  */
 
 #include <QApplication>
-#include "gui/qt/windows/mainwindow.h"
+#include "gui/windows/mainwindow.h"
 #include "wav/wav.h"
 #include "common.h"
 
@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
     /// Load in a test WAV file. This is temporary. In the future, we'll
     /// probably load a project file instead, which includes the WAV file,
     /// and we pass that to the main window.
-    const wav_c wavFile("test.wav");
+    const wav_c wavFile("test2.wav");
 
     QApplication a(argc, argv);
 

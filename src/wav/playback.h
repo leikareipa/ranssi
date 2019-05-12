@@ -17,33 +17,29 @@ class wav_c;
 class wav_playback_c : public QIODevice
 {
 public:
-    wav_playback_c(uint sampleRate, uint numChannels, uint bitsPerSample);
+    wav_playback_c(const wav_c &wav);
     ~wav_playback_c();
 
-    // Assign the given raw audio samples as the data we'll play back.
-    void copy_wav_data(const wav_c &wav);
-
-    // Resume audio playback.
-    bool resume(void);
+    bool resume_playback(void);
+    void pause_playback(void);
 
 protected:
     qint64 readData(char *dst, qint64 maxSize);
     qint64 writeData(const char *dst, qint64 maxSize);
-    qint64 bytesAvailable() const;
+    qint64 bytesAvailable(void) const;
 
 private:
+    std::vector<uchar> wav_16bit_as_8bit_samples(const wav_c &wav);
+
+    // The audio data we're to play.
+    const std::vector<uchar> sampleBuffer;
+
     struct
     {
         QAudioFormat format;
-
         QAudioOutput *output = nullptr;
 
         bool isPlaying = false;
-
-        // The audio data we're to play.
-      //  const uchar *data = nullptr;
-        std::vector<uchar> data;
-        //int dataLen = 0;
 
         // The byte position we're at in the audio stream.
         int streamPos;

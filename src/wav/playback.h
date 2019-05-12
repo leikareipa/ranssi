@@ -20,8 +20,9 @@ public:
     wav_playback_c(const wav_c &wav);
     ~wav_playback_c();
 
-    bool resume_playback(void);
-    void pause_playback(void);
+    // For user control of the playback.
+    bool resume(void);
+    void stop(void);
 
 protected:
     qint64 readData(char *dst, qint64 maxSize);

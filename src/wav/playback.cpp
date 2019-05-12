@@ -66,6 +66,8 @@ wav_playback_c::wav_playback_c(const wav_c &wav) :
 
 wav_playback_c::~wav_playback_c()
 {
+    this->audio.output->stop();
+
     return;
 }
 
@@ -87,22 +89,23 @@ std::vector<uchar> wav_playback_c::wav_16bit_as_8bit_samples(const wav_c &wav)
     return samples8bit;
 }
 
-bool wav_playback_c::resume_playback(void)
+bool wav_playback_c::resume(void)
 {
-    this->audio.playLimit = std::numeric_limits<int>::max();
+    this->audio.playLimit = std::numeric_limits<decltype(this->audio.playLimit)>::max();
 
     this->audio.output->start(this);
 
     return (this->audio.output->error() == QAudio::NoError);
 }
 
-void wav_playback_c::pause_playback(void)
+void wav_playback_c::stop(void)
 {
     this->audio.output->stop();
 
     // Make sure to position the stream back to the last position from which
     // audio was actually played (and not just buffered from).
-    this->seek(this->pos() - this->audio.output->bufferSize() - this->bytesToWrite());
+    this->seek(std::max(qint64(0),
+                        (this->pos() - this->audio.output->bufferSize() - this->bytesToWrite())));
 
     // Align to 16-bit samples.
     if (this->pos() % 2 != 0) this->seek(this->pos() - 1);

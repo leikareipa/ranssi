@@ -9,6 +9,7 @@
 
 #include <vector>
 #include <string>
+#include "wav/playback.h"
 
 // Loads a WAV (mono, 16-bit samples) file into memory as discrete samples, and
 // provides access to said sample data.
@@ -27,8 +28,9 @@ public:
 
     int bits_per_sample(void) const;
 
-    // Can be called to find out whether the audio data has been successfully loaded.
     bool is_valid(void) const;
+
+    wav_playback_c& player(void);
 
 private:
     // Returns the discrete sample data from a mono WAV file of 16-bit samples,
@@ -43,6 +45,9 @@ private:
 
     // Discrete samples and the audio's original sample rate.
     const std::pair<std::vector<int16_t>/*samples*/, int/*sample rate*/> audioData;
+
+    // Provides functionality for playing back the WAV's data as audio.
+    wav_playback_c *const playback;
 };
 
 #endif

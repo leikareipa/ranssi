@@ -9,16 +9,19 @@
 #include <QPixmap>
 #include <QDebug>
 #include <QTimer>
-#include "src/gui/qt/widgets/QWidget_text_editor_overlay.h"
-#include "src/gui/qt/widgets/QTextEdit_text_editor.h"
-#include "src/gui/qt/windows/mainwindow.h"
+#include "gui/qt/widgets/QWidget_text_editor_overlay.h"
+#include "gui/qt/widgets/QTextEdit_text_editor.h"
+#include "gui/qt/windows/mainwindow.h"
+#include "wav/wav.h"
 #include "ui_mainwindow.h"
 
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
+MainWindow::MainWindow(const wav_c &wav) :
+    QMainWindow(nullptr),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    ui->wavDisplay->copy_wav_data(wav);
 
     this->setStyleSheet("#MainWindow { background-color: #1e1e1e; }");
 

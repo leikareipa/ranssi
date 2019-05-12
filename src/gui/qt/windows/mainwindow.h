@@ -9,6 +9,8 @@
 
 #include <QMainWindow>
 
+class wav_c;
+
 namespace Ui {
 class MainWindow;
 }
@@ -18,7 +20,8 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
+    /// The constructor taking in a WAV object is temporary functionality.
+    explicit MainWindow(const wav_c &wav);
     ~MainWindow();
 
 private:

@@ -6,32 +6,22 @@
 
 #include <QApplication>
 #include "gui/qt/windows/mainwindow.h"
+#include "wav/wav.h"
 #include "common.h"
 
 void test_wav(void);
 
 int main(int argc, char *argv[])
 {
-    test_wav();
+    /// Load in a test WAV file. This is temporary. In the future, we'll
+    /// probably load a project file instead, which includes the WAV file,
+    /// and we pass that to the main window.
+    const wav_c wavFile("test.wav");
 
     QApplication a(argc, argv);
 
-    MainWindow w;
+    MainWindow w(wavFile);
     w.show();
 
     return a.exec();
-}
-
-#include "wav/wav.h"
-#include <cassert>
-void test_wav(void)
-{
-    // Two seconds of a 1 kHz sine wave at a rate of 44100.
-    wav_c wav("test.wav");
-
-    k_assert((wav.is_valid() &&
-              wav.sample_rate() == 44100 &&
-              wav.samples().size() == 88200), "Failed to load the WAV file.");
-
-    return;
 }

@@ -23,6 +23,10 @@ public:
 
     int sample_rate(void) const;
 
+    int num_channels(void) const;
+
+    int bits_per_sample(void) const;
+
     // Can be called to find out whether the audio data has been successfully loaded.
     bool is_valid(void) const;
 

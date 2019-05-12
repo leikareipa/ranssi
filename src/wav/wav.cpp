@@ -31,6 +31,16 @@ int wav_c::sample_rate(void) const
     return this->audioData.second;
 }
 
+int wav_c::num_channels() const
+{
+    return 1;
+}
+
+int wav_c::bits_per_sample() const
+{
+    return 16;
+}
+
 bool wav_c::is_valid(void) const
 {
     return !this->samples().empty();

@@ -16,11 +16,11 @@ int main(int argc, char *argv[])
     /// Load in a test WAV file. This is temporary. In the future, we'll
     /// probably load a project file instead, which includes the WAV file,
     /// and we pass that to the main window.
-    const wav_c wavFile("test2.wav");
+    const wav_c wav("test2.wav");
 
     QApplication a(argc, argv);
 
-    MainWindow w(wavFile);
+    MainWindow w(wav);
     w.show();
 
     return a.exec();

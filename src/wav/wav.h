@@ -16,7 +16,6 @@
 class wav_c
 {
 public:
-    // Loads in the audio data from the given WAV file.
     wav_c(const std::string wavFilename);
     ~wav_c(void);
 
@@ -33,11 +32,6 @@ public:
     wav_playback_c& player(void);
 
 private:
-    // Returns the discrete sample data from a mono WAV file of 16-bit samples,
-    // together with the audio's sample rate.
-    //
-    // The WAV's filename (this->filename) is expected to the set prior to calling
-    // this function.
     std::pair<std::vector<int16_t>, int> load_audio_data(void) const;
 
     // The name of the WAV file from which the audio data were loaded.

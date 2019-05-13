@@ -18,7 +18,7 @@ class wav_playback_c : public QIODevice
 {
 public:
     wav_playback_c(const wav_c &wav);
-    ~wav_playback_c();
+    ~wav_playback_c(void);
 
     // For user control of the playback.
     bool resume(void);

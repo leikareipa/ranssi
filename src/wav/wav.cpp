@@ -9,6 +9,7 @@
 #include "wav/wav.h"
 #include "common.h"
 
+// Loads in the audio data from the given WAV file.
 wav_c::wav_c(const std::string wavFilename) :
     filename(wavFilename),
     audioData(load_audio_data()),
@@ -17,7 +18,7 @@ wav_c::wav_c(const std::string wavFilename) :
     return;
 }
 
-wav_c::~wav_c()
+wav_c::~wav_c(void)
 {
     delete playback;
 
@@ -57,6 +58,11 @@ wav_playback_c& wav_c::player(void)
     return *playback;
 }
 
+// Returns the discrete sample data from a mono WAV file of 16-bit samples,
+// together with the audio's sample rate.
+//
+// The WAV's filename (this->filename) is expected to the set prior to calling
+// this function.
 std::pair<std::vector<int16_t>, int> wav_c::load_audio_data(void) const
 {
     k_assert(!this->filename.empty(), "Was asked to load the contents of an unnamed WAV file. Can't do that.");

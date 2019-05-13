@@ -64,9 +64,9 @@ wav_playback_c::wav_playback_c(const wav_c &wav) :
     return;
 }
 
-wav_playback_c::~wav_playback_c()
+wav_playback_c::~wav_playback_c(void)
 {
-    this->audio.output->stop();
+    this->stop();
 
     return;
 }

@@ -113,7 +113,7 @@ void wav_playback_c::stop(void)
     return;
 }
 
-// Qt reference: "Reads up to maxSize bytes from the device into data, and returns
+// Qt reference: "Reads up to maxSize bytes from the device into dst, and returns
 // the number of bytes read or -1 if an error occurred."
 qint64 wav_playback_c::readData(char *dst, qint64 maxSize)
 {
@@ -126,8 +126,7 @@ qint64 wav_playback_c::readData(char *dst, qint64 maxSize)
     // Make sure we don't try to read more from the sound buffer than is available in there.
     if ((this->audio.streamPos + maxSize) >= int(this->sampleBuffer.size())) maxSize = (this->sampleBuffer.size() - this->audio.streamPos);
 
-    // Also don't read over the play limit, if any.
-    if ((this->audio.playLimit <= 0) || (this->audio.playLimit - maxSize) == 0) return 0;
+    if (this->audio.playLimit <= 0) return 0;
 
     if ((this->audio.playLimit - maxSize) < 0) maxSize = (maxSize - this->audio.playLimit);
 
@@ -138,11 +137,11 @@ qint64 wav_playback_c::readData(char *dst, qint64 maxSize)
     return maxSize;
 }
 
-// Qt reference: "Writes up to maxSize bytes from data to the device. Returns the
+// Qt reference: "Writes up to maxSize bytes from src to the device. Returns the
 // number of bytes written, or -1 if an error occurred."
-qint64 wav_playback_c::writeData(const char *dst, qint64 maxSize)
+qint64 wav_playback_c::writeData(const char *src, qint64 maxSize)
 {
-    (void)dst;
+    (void)src;
     (void)maxSize;
 
     return 0;

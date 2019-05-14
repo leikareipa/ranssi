@@ -17,8 +17,8 @@ class TextEditorOverlay : public QWidget
     Q_OBJECT
 
 public:
-    TextEditorOverlay(QWidget *parentWidget, TextEditor *textEditorWidget);
-    ~TextEditorOverlay();
+    TextEditorOverlay(TextEditor *textEditorWidget);
+    ~TextEditorOverlay(void);
 
 protected:
     void paintEvent(QPaintEvent *);

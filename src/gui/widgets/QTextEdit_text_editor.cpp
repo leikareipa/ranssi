@@ -30,6 +30,7 @@
 #include <QTextEdit>
 #include <QPainter>
 #include <QDebug>
+#include "gui/widgets/QWidget_text_editor_overlay.h"
 #include "gui/widgets/QTextEdit_text_editor.h"
 
 // Vertical spacing between individual blocks of text.
@@ -37,6 +38,25 @@ static const uint BLOCK_VERTICAL_MARGIN = 20;
 
 TextEditor::TextEditor(QWidget *parent) : QTextEdit(parent)
 {
+    // Set up the text editor's overlay.
+    {
+        TextEditorOverlay *overlay = new TextEditorOverlay(this);
+
+        overlay->raise();
+
+        auto update_overlay = [=]
+        {
+            // Properly align the overlay over the parent text editor.
+            overlay->move(0, 0);
+            overlay->resize(this->size());
+            overlay->update();
+        };
+
+        connect(this, &TextEditor::cursorPositionChanged, this, [=]{ update_overlay(); });
+        connect(this, &TextEditor::textChanged, this, [=]{ update_overlay(); });
+        connect(this, &TextEditor::resized, this, [=]{ update_overlay(); });
+    }
+
     /// Temporary styling.
     this->setCursorWidth(0);
     this->setFont(QFont("Ubuntu Mono", 13));

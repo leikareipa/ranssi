@@ -6,10 +6,7 @@
  *
  */
 
-#include <QPixmap>
 #include <QDebug>
-#include "gui/widgets/QWidget_text_editor_overlay.h"
-#include "gui/widgets/QTextEdit_text_editor.h"
 #include "gui/windows/mainwindow.h"
 #include "project/project.h"
 #include "ui_mainwindow.h"
@@ -21,20 +18,8 @@ MainWindow::MainWindow(const project_c &project) :
     ui->setupUi(this);
 
     ui->wavPlayer->set_wav_data(project.wav);
-    ui->wavPlayer->playback().resume();
 
     this->setStyleSheet("#MainWindow { background-color: #1e1e1e; }");
-
-    // Set up the text editor's overlay.
-    {
-        TextEditorOverlay *overlay = new TextEditorOverlay(this, ui->textEdit);
-
-        ui->textEdit->stackUnder(overlay);
-
-        connect(ui->textEdit, &TextEditor::cursorPositionChanged, this, [=]{ overlay->update(); });
-        connect(ui->textEdit, &TextEditor::textChanged, this, [=]{ overlay->update(); });
-        connect(ui->textEdit, &TextEditor::resized, this, [=]{ overlay->update(); });
-    }
 
     return;
 }

@@ -19,8 +19,8 @@
 
 static const uint TEXT_CURSOR_WIDTH = 10;
 
-TextEditorOverlay::TextEditorOverlay(QWidget *parentWidget, TextEditor *textEditorWidget) :
-    QWidget(parentWidget),
+TextEditorOverlay::TextEditorOverlay(TextEditor *textEditorWidget) :
+    QWidget(textEditorWidget),
     textEditor(textEditorWidget)
 {
     // The overlay is expected to sit on top of the text edit widget, but we
@@ -32,7 +32,7 @@ TextEditorOverlay::TextEditorOverlay(QWidget *parentWidget, TextEditor *textEdit
     return;
 }
 
-TextEditorOverlay::~TextEditorOverlay()
+TextEditorOverlay::~TextEditorOverlay(void)
 {
     return;
 }
@@ -40,10 +40,6 @@ TextEditorOverlay::~TextEditorOverlay()
 void TextEditorOverlay::paintEvent(QPaintEvent *)
 {
     if (textEditor.isNull()) return;
-
-    // Properly align the overlay over the parent text editor.
-    this->move(textEditor->pos());
-    this->resize(textEditor->size());
 
     QPainter painter(this);
 

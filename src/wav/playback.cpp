@@ -113,15 +113,18 @@ bool wav_playback_c::resume(void)
 
 void wav_playback_c::stop(void)
 {
-    this->audio.output->stop();
+    if (this->audio.isPlaying)
+    {
+        this->audio.output->stop();
 
-    // Make sure to position the stream back to the last position from which
-    // audio was actually played (and not just buffered from).
-    this->seek(std::max(qint64(0),
-                        (this->pos() - this->audio.output->bufferSize() - this->bytesToWrite())));
+        // Make sure to position the stream back to the last position from which
+        // audio was actually played (and not just buffered from).
+        this->seek(std::max(qint64(0),
+                            (this->pos() - this->audio.output->bufferSize() - this->bytesToWrite())));
 
-    // Align to 16-bit samples.
-    if (this->pos() % 2 != 0) this->seek(this->pos() - 1);
+        // Align to 16-bit samples.
+        if (this->pos() % 2 != 0) this->seek(this->pos() - 1);
+    }
 
     return;
 }

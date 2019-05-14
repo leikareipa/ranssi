@@ -6,20 +6,18 @@
 
 #include <QApplication>
 #include "gui/windows/mainwindow.h"
-#include "wav/wav.h"
+#include "project/project.h"
+#include "wav/playback.h"
 #include "common.h"
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    /// Load in a test WAV file. This is temporary. In the future, we'll
-    /// probably load a project file instead, which includes the WAV file,
-    /// and we pass that to the main window.
-    wav_c wav("test2.wav");
-    wav.player().resume();
+    /// Temporary.
+    project_c p("Hello there", "test2.wav");
 
-    MainWindow w(wav);
+    MainWindow w(p);
     w.show();
 
     return a.exec();

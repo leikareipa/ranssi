@@ -16,6 +16,8 @@ class wav_c;
 
 class wav_playback_c : public QIODevice
 {
+    Q_OBJECT
+
 public:
     wav_playback_c(const wav_c &wav);
     ~wav_playback_c(void);

@@ -12,16 +12,13 @@
 // Loads in the audio data from the given WAV file.
 wav_c::wav_c(const std::string wavFilename) :
     filename(wavFilename),
-    audioData(load_audio_data()),
-    playback(new wav_playback_c(*this))
+    audioData(load_audio_data())
 {
     return;
 }
 
 wav_c::~wav_c(void)
 {
-    delete playback;
-
     return;
 }
 
@@ -49,13 +46,6 @@ int wav_c::bits_per_sample() const
 bool wav_c::is_valid(void) const
 {
     return !this->samples().empty();
-}
-
-wav_playback_c& wav_c::player(void)
-{
-    k_assert(this->playback, "Tried to fetch a null WAV player.");
-
-    return *playback;
 }
 
 // Returns the discrete sample data from a mono WAV file of 16-bit samples,

@@ -8,8 +8,11 @@
 #define MAIN_WINDOW_H
 
 #include <QMainWindow>
+#include <memory>
+#include "wav/playback.h"
 
-class wav_c;
+class wav_playback_c;
+class project_c;
 
 namespace Ui {
 class MainWindow;
@@ -20,9 +23,8 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    /// The constructor taking in a WAV object is temporary functionality.
-    explicit MainWindow(const wav_c &wav);
-    ~MainWindow();
+    explicit MainWindow(const project_c& project);
+    ~MainWindow(void);
 
 private:
     Ui::MainWindow *ui;

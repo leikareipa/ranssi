@@ -11,16 +11,16 @@
 #include "gui/widgets/QWidget_text_editor_overlay.h"
 #include "gui/widgets/QTextEdit_text_editor.h"
 #include "gui/windows/mainwindow.h"
-#include "wav/wav.h"
+#include "project/project.h"
 #include "ui_mainwindow.h"
 
-MainWindow::MainWindow(const wav_c &wav) :
+MainWindow::MainWindow(const project_c &project) :
     QMainWindow(nullptr),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
-    ui->wavDisplay->copy_wav_data(wav);
+    ui->wavDisplay->copy_wav_data(project.wav);
 
     this->setStyleSheet("#MainWindow { background-color: #1e1e1e; }");
 
@@ -38,7 +38,7 @@ MainWindow::MainWindow(const wav_c &wav) :
     return;
 }
 
-MainWindow::~MainWindow()
+MainWindow::~MainWindow(void)
 {
     delete ui;
 

@@ -8,7 +8,6 @@
 #define MAIN_WINDOW_H
 
 #include <QMainWindow>
-#include <memory>
 #include "wav/playback.h"
 
 class wav_playback_c;

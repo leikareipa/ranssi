@@ -31,7 +31,7 @@
      <number>0</number>
     </property>
     <item>
-     <widget class="WavDisplay" name="wavDisplay" native="true">
+     <widget class="WavPlayer" name="wavPlayer" native="true">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
         <horstretch>0</horstretch>
@@ -66,9 +66,9 @@
    <header>QTextEdit_text_editor.h</header>
   </customwidget>
   <customwidget>
-   <class>WavDisplay</class>
+   <class>WavPlayer</class>
    <extends>QWidget</extends>
-   <header>QWidget_wav_display.h</header>
+   <header>QWidget_wav_player.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

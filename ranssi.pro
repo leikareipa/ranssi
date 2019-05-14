@@ -15,18 +15,18 @@ SOURCES += src/main.cpp\
            src/gui/widgets/QTextEdit_text_editor.cpp \
            src/gui/widgets/QWidget_text_editor_overlay.cpp \
            src/wav/wav.cpp \
-           src/gui/widgets/QWidget_wav_display.cpp \
            src/wav/playback.cpp \
-           src/project/project.cpp
+           src/project/project.cpp \
+           src/gui/widgets/QWidget_wav_player.cpp
 
 HEADERS += src/gui/windows/mainwindow.h \
            src/gui/widgets/QTextEdit_text_editor.h \
            src/gui/widgets/QWidget_text_editor_overlay.h \
            src/wav/wav.h \
            src/common.h \
-           src/gui/widgets/QWidget_wav_display.h \
            src/wav/playback.h \
-           src/project/project.h
+           src/project/project.h \
+           src/gui/widgets/QWidget_wav_player.h
 
 FORMS += src/gui/windows/ui/mainwindow.ui
 

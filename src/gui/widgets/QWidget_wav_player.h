@@ -4,21 +4,21 @@
  *
  */
 
-#ifndef WAV_DISPLAY_H
-#define WAV_DISPLAY_H
+#ifndef WAV_PLAYER_H
+#define WAV_PLAYER_H
 
 #include <QPointer>
 #include <QWidget>
 
 class wav_c;
 
-class WavDisplay : public QWidget
+class WavPlayer : public QWidget
 {
     Q_OBJECT
 
 public:
-    WavDisplay(QWidget *parent = 0);
-    ~WavDisplay();
+    WavPlayer(QWidget *parent = 0);
+    ~WavPlayer();
 
     void copy_wav_data(const wav_c &wav);
 

@@ -2,17 +2,19 @@
  * 2019 Tarpeeksi Hyvae Soft /
  * ranssi
  *
- * A widget that displays across its surface an image of a waveform.
+ * A widget that acts as a player of raw WAV audio data. Provides controls for
+ * managing the playback, and displays across its surface an image of the audio's
+ * waveform.
  *
  */
 
 #include <QPainter>
 #include <QDebug>
-#include "gui/widgets/QWidget_wav_display.h"
+#include "gui/widgets/QWidget_wav_player.h"
 #include "gui/windows/mainwindow.h"
 #include "wav/wav.h"
 
-WavDisplay::WavDisplay(QWidget *parent) :
+WavPlayer::WavPlayer(QWidget *parent) :
     QWidget(parent)
 {
     this->setStyleSheet("border: none;");
@@ -20,12 +22,12 @@ WavDisplay::WavDisplay(QWidget *parent) :
     return;
 }
 
-WavDisplay::~WavDisplay()
+WavPlayer::~WavPlayer()
 {
     return;
 }
 
-void WavDisplay::copy_wav_data(const wav_c &wav)
+void WavPlayer::copy_wav_data(const wav_c &wav)
 {
     this->wav.samples = wav.samples();
     this->wav.sampleRate = wav.sample_rate();
@@ -38,7 +40,7 @@ void WavDisplay::copy_wav_data(const wav_c &wav)
 // (Re-)generates the image of the waveform that we'll display on this widget.
 // You might call this, for instance, when the WAV data changes, or when the
 // widget is resized.
-void WavDisplay::update_waveform_image(void)
+void WavPlayer::update_waveform_image(void)
 {
     if (this->wav.samples.empty())
     {
@@ -86,7 +88,7 @@ void WavDisplay::update_waveform_image(void)
     return;
 }
 
-void WavDisplay::paintEvent(QPaintEvent *)
+void WavPlayer::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
 
@@ -103,7 +105,7 @@ void WavDisplay::paintEvent(QPaintEvent *)
     return;
 }
 
-void WavDisplay::resizeEvent(QResizeEvent *event)
+void WavPlayer::resizeEvent(QResizeEvent *event)
 {
     update_waveform_image();
     QWidget::resizeEvent(event);

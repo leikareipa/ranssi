@@ -31,6 +31,13 @@ protected:
     qint64 writeData(const char *dst, qint64 maxSize);
     qint64 bytesAvailable(void) const;
 
+signals:
+    // Emitted when playback is started.
+    void started(void);
+
+    // Emitted when playback is stopped.
+    void stopped(void);
+
 private:
     std::vector<uchar> wav_16bit_as_8bit_samples(const wav_c &wav);
 

@@ -9,6 +9,8 @@
 
 #include <QPointer>
 #include <QWidget>
+#include <memory>
+#include "wav/playback.h"
 
 class wav_c;
 
@@ -20,7 +22,9 @@ public:
     WavPlayer(QWidget *parent = 0);
     ~WavPlayer();
 
-    void copy_wav_data(const wav_c &wav);
+    void set_wav_data(const wav_c &wavData);
+
+    wav_playback_c& playback(void) const;
 
 protected:
     void paintEvent(QPaintEvent *);
@@ -34,7 +38,9 @@ private:
     {
         std::vector<int16_t> samples;
         uint sampleRate;
-    } wav;
+    } wavData;
+
+    std::unique_ptr<wav_playback_c> player;
 
     // The waveform image we generate from the WAV sample data, and which will
     // be displayed on this widget.

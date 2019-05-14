@@ -20,7 +20,8 @@ MainWindow::MainWindow(const project_c &project) :
 {
     ui->setupUi(this);
 
-    ui->wavPlayer->copy_wav_data(project.wav);
+    ui->wavPlayer->set_wav_data(project.wav);
+    ui->wavPlayer->playback().resume();
 
     this->setStyleSheet("#MainWindow { background-color: #1e1e1e; }");
 

@@ -13,6 +13,7 @@
 #include "gui/widgets/QWidget_wav_player.h"
 #include "gui/windows/mainwindow.h"
 #include "wav/wav.h"
+#include "common.h"
 
 WavPlayer::WavPlayer(QWidget *parent) :
     QWidget(parent)
@@ -24,17 +25,33 @@ WavPlayer::WavPlayer(QWidget *parent) :
 
 WavPlayer::~WavPlayer()
 {
+    this->player->stop();
+
     return;
 }
 
-void WavPlayer::copy_wav_data(const wav_c &wav)
+// Assigns the raw audio data of the given WAV to the player.
+void WavPlayer::set_wav_data(const wav_c &wav)
 {
-    this->wav.samples = wav.samples();
-    this->wav.sampleRate = wav.sample_rate();
+    if (this->player) this->player->stop();
+
+    this->wavData.samples = wav.samples();
+    this->wavData.sampleRate = wav.sample_rate();
+
+    this->player.reset(new wav_playback_c(wav));
+    connect(this->player.get(), &wav_playback_c::stopped, this, []{ qDebug() << "Audio playback stopped."; });
+    connect(this->player.get(), &wav_playback_c::started, this, []{ qDebug() << "Audio playback started."; });
 
     update_waveform_image();
 
     return;
+}
+
+wav_playback_c& WavPlayer::playback() const
+{
+    k_assert(this->player, "Tried to access the WAV player before it had been initialized.");
+
+    return *this->player;
 }
 
 // (Re-)generates the image of the waveform that we'll display on this widget.
@@ -42,7 +59,7 @@ void WavPlayer::copy_wav_data(const wav_c &wav)
 // widget is resized.
 void WavPlayer::update_waveform_image(void)
 {
-    if (this->wav.samples.empty())
+    if (this->wavData.samples.empty())
     {
         // Assign a null image.
         this->waveformImage = QImage();
@@ -60,10 +77,10 @@ void WavPlayer::update_waveform_image(void)
     // assumes that each bin has more than one sample in it. If there isn't, the
     // resulting image is likely not visually optimal.
     {
-        const uint peakSampleValue = *std::max_element(this->wav.samples.begin(),
-                                                       this->wav.samples.end(),
+        const uint peakSampleValue = *std::max_element(this->wavData.samples.begin(),
+                                                       this->wavData.samples.end(),
                                                        [](int16_t a, int16_t b){ return abs(a) < abs(b); });
-        const uint binWidth = (this->wav.samples.size() / double(waveformWidth));
+        const uint binWidth = (this->wavData.samples.size() / double(waveformWidth));
         const double yStep = (waveformHeight / double(peakSampleValue + 1) / 2);
 
         QPainter painter(&this->waveformImage);
@@ -72,10 +89,10 @@ void WavPlayer::update_waveform_image(void)
 
         for (uint x = 0; x < waveformWidth; x++)
         {
-            const int binMin = *std::min_element(this->wav.samples.begin() + (x * binWidth),
-                                                 this->wav.samples.begin() + ((x+1) * binWidth));
-            const int binMax = *std::max_element(this->wav.samples.begin() + (x * binWidth),
-                                                 this->wav.samples.begin() + ((x+1) * binWidth));
+            const int binMin = *std::min_element(this->wavData.samples.begin() + (x * binWidth),
+                                                 this->wavData.samples.begin() + ((x+1) * binWidth));
+            const int binMax = *std::max_element(this->wavData.samples.begin() + (x * binWidth),
+                                                 this->wavData.samples.begin() + ((x+1) * binWidth));
 
             // Draw a vertical line between the highest and lowest point on this bin.
             painter.drawLine(x, (binMin * yStep + (waveformHeight / 2)),

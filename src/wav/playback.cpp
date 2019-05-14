@@ -55,8 +55,22 @@ wav_playback_c::wav_playback_c(const wav_c &wav) :
     {
         switch (state)
         {
-            case QAudio::State::IdleState: this->audio.isPlaying = false; break;
-            case QAudio::State::ActiveState: this->audio.isPlaying = true; break;
+            case QAudio::State::SuspendedState:
+            case QAudio::State::StoppedState:
+            case QAudio::State::IdleState:
+            {
+                this->audio.isPlaying = false;
+                emit stopped();
+                break;
+            }
+
+            case QAudio::State::ActiveState:
+            {
+                this->audio.isPlaying = true;
+                emit started();
+                break;
+            }
+
             default: break;
         }
     });

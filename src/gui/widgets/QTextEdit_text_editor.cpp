@@ -48,6 +48,14 @@ TextEditor::TextEditor(QWidget *parent) : QTextEdit(parent)
                         "  border: none;"
                         "}");
 
+    // Disable font anti-aliasing; for stylistic reasons.
+    /// In the future, will likely have a user-accessible toggle for this.
+    {
+        QFont f = this->font();
+        f.setStyleStrategy(QFont::NoAntialias);
+        this->setFont(f);
+    }
+
     // Tab will be used for word completion etc.
     this->setTabChangesFocus(false);
 

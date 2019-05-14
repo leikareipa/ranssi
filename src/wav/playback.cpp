@@ -39,7 +39,6 @@ wav_playback_c::wav_playback_c(const wav_c &wav) :
     // Create an audio output.
     {
         this->audio.output = new QAudioOutput(this->audio.format, this);
-        this->audio.output->setBufferSize(7000);
 
         // Leave the audio engine running in the background, waiting for sound data.
         this->audio.output->start(this);

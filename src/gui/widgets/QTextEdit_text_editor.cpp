@@ -32,6 +32,7 @@
 #include <QDebug>
 #include "gui/widgets/QWidget_text_editor_overlay.h"
 #include "gui/widgets/QTextEdit_text_editor.h"
+#include "text/elements.h"
 
 // Vertical spacing between individual blocks of text.
 static const uint BLOCK_VERTICAL_MARGIN = 20;
@@ -115,6 +116,11 @@ bool TextEditor::eventFilter(QObject *, QEvent *event)
             // Validate the text.
             {
                 /// TODO. newBlockText = validated(newBlockText);
+                
+                const QString speaker = text_elements_c(newBlockText).speaker();
+                const QString utterance = text_elements_c(newBlockText).utterance();
+
+                qDebug() << speaker << " | " << utterance;
             }
 
             // Insert the validated text.

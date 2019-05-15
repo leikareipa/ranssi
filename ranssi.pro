@@ -17,7 +17,8 @@ SOURCES += src/main.cpp\
            src/wav/wav.cpp \
            src/wav/playback.cpp \
            src/project/project.cpp \
-           src/gui/widgets/QWidget_wav_player.cpp
+           src/gui/widgets/QWidget_wav_player.cpp \
+           src/text/elements.cpp
 
 HEADERS += src/gui/windows/mainwindow.h \
            src/gui/widgets/QTextEdit_text_editor.h \
@@ -26,7 +27,8 @@ HEADERS += src/gui/windows/mainwindow.h \
            src/common.h \
            src/wav/playback.h \
            src/project/project.h \
-           src/gui/widgets/QWidget_wav_player.h
+           src/gui/widgets/QWidget_wav_player.h \
+           src/text/elements.h
 
 FORMS += src/gui/windows/ui/mainwindow.ui
 

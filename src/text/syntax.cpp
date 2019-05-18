@@ -27,6 +27,9 @@ text_syntax_c::text_syntax_c(const QString &text) :
 {
     k_assert(!this->text.isEmpty(), "Expected non-empty text for syntax validation.");
 
+    k_assert((this->text.length() == this->text.simplified().length()),
+             "Expected text for syntax validation to have been stripped to extraneous whitespace.");
+
     return;
 }
 

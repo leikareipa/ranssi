@@ -118,14 +118,14 @@ bool TextEditor::eventFilter(QObject *, QEvent *event)
                 const QString speaker = text_elements_c(text).speaker();
                 const QString utterance = text_elements_c(text).utterance();
 
-                /// TODO. Speaker name validation.
+                // Don't add text that's missing the speaker name and/or utterance text.
+                if (speaker.isEmpty() || utterance.isEmpty()) return true;
+
+                /// TODO. Speaker name formatting.
                 validatedText = (speaker
                                  + ": "
                                  + text_formatting_c(utterance).formatted());
             }
-
-            // Disallow adding empty blocks.
-            if (validatedText.isEmpty()) return true;
 
             // Insert the validated text.
             erase_text_in_block(this->textCursor());

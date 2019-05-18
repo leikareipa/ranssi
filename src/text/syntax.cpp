@@ -45,7 +45,6 @@ std::vector<text_metadata_span_s> text_syntax_c::spans(void)
         for (const auto &regexpString: regexpStrings)
         {
             QRegularExpression r(regexpString);
-
             k_assert(r.isValid(), "Invalid regular expression.");
 
             auto matches = r.globalMatch(this->text);
@@ -66,29 +65,29 @@ std::vector<text_metadata_span_s> text_syntax_c::spans(void)
     /// TODO. Add more tests, like for unterminated quotes.
     mark_as_error({
                   // No space following punctuation.
-                  "[.,?!;:][^ ]",
+                  {"[.,?!;:][^ ]"},
 
                   // Punctuation as the string's first character. But allow "...text"
                   // as a continuation of a previous utterance.
-                  "^[,?!;:]+",
+                  {"^[,?!;:]+"},
 
                   // Text ending with whitespace.
-                  "(\\s)+$",
+                  {"(\\s)+$"},
 
                   // Text starting with whitespace.
-                  "^(\\s)+",
+                  {"^(\\s)+"},
 
                   // Space preceding punctuation ("Text .", "Text !", "Text ,", etc).
-                  " +[.,?!;:]",
+                  {" +[.,?!;:]"},
 
                   // A sentence not ending in sentence-final punctuation.
-                  "[^.!?]$",
+                  {"[^.!?]$"},
 
                   // No capitalization following sentence-final punctuation
-                  "(^|[.?!]) *\\p{Ll}",
+                  {"(^|[.?!]) *\\p{Ll}"},
 
                   // Capitalization following non-sentence-final punctuation.
-                  "[:;,] *\\p{Lu}",
+                  {"[:;,] *\\p{Lu}"},
 
                   // Two subsequent periods (..) but not three (...).
                   ///...

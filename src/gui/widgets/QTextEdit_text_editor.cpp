@@ -32,7 +32,9 @@
 #include <QDebug>
 #include "gui/widgets/QWidget_text_editor_overlay.h"
 #include "gui/widgets/QTextEdit_text_editor.h"
+#include "text/formatting.h"
 #include "text/elements.h"
+#include "text/syntax.h"
 
 // Vertical spacing between individual blocks of text.
 static const uint BLOCK_VERTICAL_MARGIN = 20;
@@ -108,26 +110,26 @@ bool TextEditor::eventFilter(QObject *, QEvent *event)
         if (keyEvent->key() == Qt::Key_Enter ||
             keyEvent->key() == Qt::Key_Return)
         {
-            QString newBlockText = text_in_block(this->textCursor());
+            // Validate the text.
+            QString validatedText;
+            {
+                QString text = text_in_block(this->textCursor());
+
+                const QString speaker = text_elements_c(text).speaker();
+                const QString utterance = text_elements_c(text).utterance();
+
+                /// TODO. Speaker name validation.
+                validatedText = (speaker
+                                 + ": "
+                                 + text_formatting_c(utterance).formatted());
+            }
 
             // Disallow adding empty blocks.
-            if (newBlockText.isEmpty()) return true;
-
-            // Validate the text.
-            {
-                /// TODO. newBlockText = validated(newBlockText);
-                
-                const QString speaker = text_elements_c(newBlockText).speaker();
-                const QString utterance = text_elements_c(newBlockText).utterance();
-
-                qDebug() << speaker << " | " << utterance;
-            }
+            if (validatedText.isEmpty()) return true;
 
             // Insert the validated text.
-            {
-                erase_text_in_block(this->textCursor());
-                insert_text_into_block(newBlockText, this->textCursor());
-            }
+            erase_text_in_block(this->textCursor());
+            insert_text_into_block(validatedText, this->textCursor());
 
             begin_new_block();
 

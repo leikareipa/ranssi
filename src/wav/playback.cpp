@@ -19,8 +19,8 @@ wav_playback_c::wav_playback_c(const wav_c &wav) :
     // Define the audio format.
     {
         // The playback functionality only supports 16-bit mono audio.
-        const uint numChannels = 1;
-        const uint bitsPerSample = 16;
+        const unsigned numChannels = 1;
+        const unsigned bitsPerSample = 16;
 
         k_assert((wav.num_channels() == numChannels), "Mismatched channel count for WAV playback.");
         k_assert((wav.bits_per_sample() == bitsPerSample), "Mismatched sample size for WAV playback.");

@@ -42,7 +42,7 @@ text_formatting_c::text_formatting_c(const QString &text) :
 QString text_formatting_c::formatted(void)
 {
     // Parse the text to find which formatting tags should be inserted and where.
-    std::map<uint        /*character idx in the text where the formatting begins*/,
+    std::map<unsigned    /*character idx in the text where the formatting begins*/,
              QStringList /*formatting tags at this idx"*/> formatting;
     {
         auto add_tags = [&formatting](const text_metadata_span_s &span,

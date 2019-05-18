@@ -37,7 +37,7 @@
 #include "text/syntax.h"
 
 // Vertical spacing between individual blocks of text.
-static const uint BLOCK_VERTICAL_MARGIN = 20;
+static const unsigned BLOCK_VERTICAL_MARGIN = 20;
 
 TextEditor::TextEditor(QWidget *parent) : QTextEdit(parent)
 {

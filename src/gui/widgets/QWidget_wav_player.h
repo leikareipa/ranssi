@@ -37,7 +37,7 @@ private:
     struct
     {
         std::vector<int16_t> samples;
-        uint sampleRate;
+        unsigned sampleRate;
     } wavData;
 
     std::unique_ptr<wav_playback_c> player;

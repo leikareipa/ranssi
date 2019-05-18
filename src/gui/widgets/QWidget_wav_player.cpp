@@ -67,8 +67,8 @@ void WavPlayer::update_waveform_image(void)
         return;
     }
 
-    const uint waveformWidth = (this->width() * 0.97);
-    const uint waveformHeight = (this->height() * 0.70);
+    const unsigned waveformWidth = (this->width() * 0.97);
+    const unsigned waveformHeight = (this->height() * 0.70);
 
     this->waveformImage = QImage(waveformWidth, waveformHeight, QImage::Format_ARGB32);
     this->waveformImage.fill(QColor("transparent"));
@@ -77,17 +77,17 @@ void WavPlayer::update_waveform_image(void)
     // assumes that each bin has more than one sample in it. If there isn't, the
     // resulting image is likely not visually optimal.
     {
-        const uint peakSampleValue = *std::max_element(this->wavData.samples.begin(),
-                                                       this->wavData.samples.end(),
-                                                       [](int16_t a, int16_t b){ return abs(a) < abs(b); });
-        const uint binWidth = (this->wavData.samples.size() / double(waveformWidth));
+        const unsigned peakSampleValue = *std::max_element(this->wavData.samples.begin(),
+                                                           this->wavData.samples.end(),
+                                                           [](int16_t a, int16_t b){ return abs(a) < abs(b); });
+        const unsigned binWidth = (this->wavData.samples.size() / double(waveformWidth));
         const double yStep = (waveformHeight / double(peakSampleValue + 1) / 2);
 
         QPainter painter(&this->waveformImage);
 
         painter.setPen(QColor("#6e6e6e"));
 
-        for (uint x = 0; x < waveformWidth; x++)
+        for (unsigned x = 0; x < waveformWidth; x++)
         {
             const int binMin = *std::min_element(this->wavData.samples.begin() + (x * binWidth),
                                                  this->wavData.samples.begin() + ((x+1) * binWidth));

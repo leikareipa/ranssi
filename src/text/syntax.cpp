@@ -49,8 +49,8 @@ std::vector<text_metadata_span_s> text_syntax_c::spans(void)
             while (matches.hasNext())
             {
                 auto match = matches.next();
-                syntaxSpans.push_back(text_metadata_span_s{uint(match.capturedStart()),
-                                                           uint(match.capturedLength()),
+                syntaxSpans.push_back(text_metadata_span_s{unsigned(match.capturedStart()),
+                                                           unsigned(match.capturedLength()),
                                                            text_metadata_span_s::metadata_e::error});
             }
         }

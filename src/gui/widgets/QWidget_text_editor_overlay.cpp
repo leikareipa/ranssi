@@ -17,7 +17,7 @@
 #include "gui/widgets/QWidget_text_editor_overlay.h"
 #include "gui/widgets/QTextEdit_text_editor.h"
 
-static const uint TEXT_CURSOR_WIDTH = 10;
+static const unsigned TEXT_CURSOR_WIDTH = 10;
 
 TextEditorOverlay::TextEditorOverlay(TextEditor *textEditorWidget) :
     QWidget(textEditorWidget),

@@ -6,10 +6,12 @@
  *
  */
 
+#include <QShortcut>
 #include <QDebug>
 #include "gui/windows/mainwindow.h"
 #include "project/project.h"
 #include "ui_mainwindow.h"
+#include "common.h"
 
 MainWindow::MainWindow(const project_c &project) :
     QMainWindow(nullptr),
@@ -20,6 +22,36 @@ MainWindow::MainWindow(const project_c &project) :
     ui->wavPlayer->set_wav_data(project.wav);
 
     this->setStyleSheet("#MainWindow { background-color: #1e1e1e; }");
+
+    // Set up keyboard shortcuts.
+    {
+        // Creates a new QShortcut instance assigned to the given QKeySequence-
+        // compatible sequence string (e.g. "F1" for the F1 key).
+        auto keyboardShortcut = [this](const std::string keySequence)->QShortcut*
+        {
+            k_assert((this->keyboardShortcuts.find(keySequence) == this->keyboardShortcuts.end()),
+                      "Attempting to overwrite an existing keyboard shortcut.");
+
+            QShortcut *shortcut = new QShortcut(QKeySequence(keySequence.c_str()), this);
+
+            return (this->keyboardShortcuts[keySequence] = shortcut);
+        };
+
+        connect(keyboardShortcut("f1"), &QShortcut::activated, []
+        {
+            /// TODO. Seek audio backward.
+        });
+
+        connect(keyboardShortcut("f2"), &QShortcut::activated, []
+        {
+            /// TODO. Seek audio forward.
+        });
+
+        connect(keyboardShortcut("esc"), &QShortcut::activated, []
+        {
+            /// TODO. Toggle audio playback pause/resume.
+        });
+    }
 
     return;
 }

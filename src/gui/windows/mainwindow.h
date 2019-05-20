@@ -8,10 +8,12 @@
 #define MAIN_WINDOW_H
 
 #include <QMainWindow>
+#include <unordered_map>
 #include "wav/playback.h"
 
 class wav_playback_c;
 class project_c;
+class QShortcut;
 
 namespace Ui {
 class MainWindow;
@@ -27,6 +29,9 @@ public:
 
 private:
     Ui::MainWindow *ui;
+
+    // The keyboard shortcuts assigned for this window.
+    std::unordered_map<std::string/*QKeySequence string*/, QShortcut*> keyboardShortcuts;
 };
 
 #endif

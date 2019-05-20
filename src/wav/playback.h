@@ -25,6 +25,9 @@ public:
     // For user control of the playback.
     bool resume(void);
     void stop(void);
+    void rewind_ms(const unsigned ms);
+    void forward_ms(const unsigned ms);
+    void toggle_pause(void);
 
 protected:
     qint64 readData(char *dst, qint64 maxSize);
@@ -40,6 +43,10 @@ signals:
 
 private:
     std::vector<uchar> wav_16bit_as_8bit_samples(const wav_c &wav);
+
+    int pos_ms(void) const;
+
+    void seek_ms(const int deltaMs);
 
     // The audio data we're to play.
     const std::vector<uchar> sampleBuffer;

@@ -26,6 +26,8 @@ public:
 
     int bits_per_sample(void) const;
 
+    int duration_ms(void) const;
+
     bool is_valid(void) const;
 
 private:

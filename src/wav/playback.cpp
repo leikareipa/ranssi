@@ -84,6 +84,27 @@ wav_playback_c::~wav_playback_c(void)
     return;
 }
 
+// Returns the playback's current audio position, in milliseconds, counting from
+// the beginning of the audio. Assumes that the audio samples are 16 bits each,
+// each presented as a pair of 8-bit values.
+int wav_playback_c::pos_ms(void) const
+{
+    return int((this->pos() / 2.0) / (this->audio.format.sampleRate() / 1000.0));
+}
+
+// Seek the playback forward or backward by the given delta, relative to the
+// playback's current position. Assumes that the audio samples are 16 bits each,
+// each presented as a pair of 8-bit values.
+void wav_playback_c::seek_ms(const int deltaMs)
+{
+    const int newSampleIdx = std::min(int(this->sampleBuffer.size()),
+                                      std::max(0, int((pos_ms() + deltaMs) * (this->audio.format.sampleRate() / 1000.0) * 2)));
+
+    this->seek(newSampleIdx);
+
+    return;
+}
+
 // Takes in a WAV of 16-bit samples, and returns its samples as consecutive
 // 8-bit pairs.
 std::vector<uchar> wav_playback_c::wav_16bit_as_8bit_samples(const wav_c &wav)
@@ -125,6 +146,31 @@ void wav_playback_c::stop(void)
         // Align to 16-bit samples.
         if (this->pos() % 2 != 0) this->seek(this->pos() - 1);
     }
+
+    return;
+}
+
+void wav_playback_c::rewind_ms(const unsigned ms)
+{
+    this->seek_ms(-ms);
+
+    return;
+}
+
+void wav_playback_c::forward_ms(const unsigned ms)
+{
+    this->seek_ms(ms);
+
+    return;
+}
+
+void wav_playback_c::toggle_pause(void)
+{
+    if (this->audio.isPlaying)
+    {
+        this->stop();
+    }
+    else this->resume();
 
     return;
 }

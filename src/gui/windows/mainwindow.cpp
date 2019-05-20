@@ -37,19 +37,19 @@ MainWindow::MainWindow(const project_c &project) :
             return (this->keyboardShortcuts[keySequence] = shortcut);
         };
 
-        connect(keyboardShortcut("f1"), &QShortcut::activated, []
+        connect(keyboardShortcut("f1"), &QShortcut::activated, [this]
         {
-            /// TODO. Seek audio backward.
+            ui->wavPlayer->playback().rewind_ms(2500);
         });
 
-        connect(keyboardShortcut("f2"), &QShortcut::activated, []
+        connect(keyboardShortcut("f2"), &QShortcut::activated, [this]
         {
-            /// TODO. Seek audio forward.
+            ui->wavPlayer->playback().forward_ms(2500);
         });
 
-        connect(keyboardShortcut("esc"), &QShortcut::activated, []
+        connect(keyboardShortcut("esc"), &QShortcut::activated, [this]
         {
-            /// TODO. Toggle audio playback pause/resume.
+            ui->wavPlayer->playback().toggle_pause();
         });
     }
 

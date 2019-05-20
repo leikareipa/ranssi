@@ -24,7 +24,7 @@ wav_c::~wav_c(void)
 
 const std::vector<int16_t>& wav_c::samples(void) const
 {
-    return audioData.first;
+    return this->audioData.first;
 }
 
 int wav_c::sample_rate(void) const
@@ -32,14 +32,19 @@ int wav_c::sample_rate(void) const
     return this->audioData.second;
 }
 
-int wav_c::num_channels() const
+int wav_c::num_channels(void) const
 {
     return 1;
 }
 
-int wav_c::bits_per_sample() const
+int wav_c::bits_per_sample(void) const
 {
     return 16;
+}
+
+int wav_c::duration_ms(void) const
+{
+    return ((this->samples().size() / this->sample_rate()) * 1000);
 }
 
 // Can be called to find out whether the audio data has been successfully loaded.

@@ -89,7 +89,14 @@ wav_playback_c::~wav_playback_c(void)
 // each presented as a pair of 8-bit values.
 int wav_playback_c::pos_ms(void) const
 {
-    return int((this->pos() / 2.0) / (this->audio.format.sampleRate() / 1000.0));
+    return int(((this->pos() - this->audio.output->bufferSize()) / 2.0) / (this->audio.format.sampleRate() / 1000.0));
+}
+
+// Returns the playback's current audio position, in percentage of the audio's
+// total length, counting from the beginning of the audio.
+double wav_playback_c::pos_percent(void) const
+{
+    return ((this->pos() - this->audio.output->bufferSize()) / double(this->sampleBuffer.size()));
 }
 
 // Seek the playback forward or backward by the given delta, relative to the
@@ -101,6 +108,8 @@ void wav_playback_c::seek_ms(const int deltaMs)
                                       std::max(0, int((pos_ms() + deltaMs) * (this->audio.format.sampleRate() / 1000.0) * 2)));
 
     this->seek(newSampleIdx);
+
+    emit pos_changed();
 
     return;
 }
@@ -175,10 +184,17 @@ void wav_playback_c::toggle_pause(void)
     return;
 }
 
+bool wav_playback_c::is_playing(void) const
+{
+    return this->audio.isPlaying;
+}
+
 // Qt reference: "Reads up to maxSize bytes from the device into dst, and returns
 // the number of bytes read or -1 if an error occurred."
 qint64 wav_playback_c::readData(char *dst, qint64 maxSize)
 {
+    emit pos_changed();
+
     this->audio.streamPos = this->pos();
     this->audio.playbackPos = ((this->audio.streamPos / 2) / (this->audio.format.sampleRate() / 1000.0));
 

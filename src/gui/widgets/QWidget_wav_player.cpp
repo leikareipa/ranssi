@@ -39,8 +39,19 @@ void WavPlayer::set_wav_data(const wav_c &wav)
     this->wavData.sampleRate = wav.sample_rate();
 
     this->player.reset(new wav_playback_c(wav));
-    connect(this->player.get(), &wav_playback_c::stopped, this, []{ qDebug() << "Audio playback stopped."; });
-    connect(this->player.get(), &wav_playback_c::started, this, []{ qDebug() << "Audio playback started."; });
+
+    connect(this->player.get(), &wav_playback_c::stopped, this, [this]
+    {
+        this->update();
+    });
+    connect(this->player.get(), &wav_playback_c::started, this, [this]
+    {
+        this->update();
+    });
+    connect(this->player.get(), &wav_playback_c::pos_changed, this, [this]
+    {
+        this->update();
+    });
 
     update_waveform_image();
 
@@ -117,6 +128,19 @@ void WavPlayer::paintEvent(QPaintEvent *)
         painter.drawImage(((this->width() - this->waveformImage.width()) / 2),
                           ((this->height() - this->waveformImage.height()) / 2 + 3), // +3 to make some vertical room for the audio position indicator.
                           this->waveformImage);
+
+        // Draw a playback position indicator.
+        {
+            const int indicatorOffs = (this->waveformImage.width() * this->playback().pos_percent());
+
+            painter.setPen(QColor("dimgray"));
+            painter.setBrush(this->playback().is_playing()? QColor("dimgray") : QColor("transparent"));
+
+            painter.translate(((this->width() - this->waveformImage.width()) / 2.0 + indicatorOffs), 3);
+
+            const QPolygon triangle({QPoint(-5, 0), QPoint(5, 0), QPoint(0, 5)});
+            painter.drawPolygon(triangle);
+        }
     }
 
     return;

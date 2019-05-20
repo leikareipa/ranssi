@@ -29,6 +29,10 @@ public:
     void forward_ms(const unsigned ms);
     void toggle_pause(void);
 
+    double pos_percent() const;
+    bool is_playing(void) const;
+    int pos_ms(void) const;
+
 protected:
     qint64 readData(char *dst, qint64 maxSize);
     qint64 writeData(const char *dst, qint64 maxSize);
@@ -41,10 +45,12 @@ signals:
     // Emitted when playback is stopped.
     void stopped(void);
 
+    // Emitted when new audio data is read into the playback buffer, indicating
+    // that the playback position has changed.
+    void pos_changed(void);
+
 private:
     std::vector<uchar> wav_16bit_as_8bit_samples(const wav_c &wav);
-
-    int pos_ms(void) const;
 
     void seek_ms(const int deltaMs);
 

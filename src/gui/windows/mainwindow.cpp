@@ -8,22 +8,31 @@
 
 #include <QShortcut>
 #include <QDebug>
+#include <QTime>
 #include "gui/windows/mainwindow.h"
 #include "project/project.h"
 #include "ui_mainwindow.h"
+#include "wav/playback.h"
 #include "common.h"
 
-MainWindow::MainWindow(const project_c &project) :
+MainWindow::MainWindow(const project_c &ranssiProject) :
     QMainWindow(nullptr),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    project(ranssiProject)
 {
     ui->setupUi(this);
 
-    ui->wavPlayer->set_wav_data(project.wav);
-
-    this->setWindowTitle(QString::fromStdString(project.title) + " - ranssi");
-
     this->setStyleSheet("#MainWindow { background-color: #1e1e1e; }");
+
+    // Set up the WAV player.
+      {
+        ui->wavPlayer->set_wav_data(project.wav);
+
+        connect(&ui->wavPlayer->playback(), &wav_playback_c::pos_changed, this, [this]
+        {
+            update_window_title();
+        });
+    }
 
     // Set up keyboard shortcuts.
     {
@@ -55,12 +64,32 @@ MainWindow::MainWindow(const project_c &project) :
         });
     }
 
+    update_window_title();
+
     return;
 }
 
 MainWindow::~MainWindow(void)
 {
     delete ui;
+
+    return;
+}
+
+void MainWindow::update_window_title(void)
+{
+    const QString title = QString::fromStdString(project.title);
+
+    const QString playbackTimestamp = QTime(0, 0).addMSecs(std::max(0, ui->wavPlayer->playback().pos_ms()))
+                                                 .toString("hh:mm:ss");
+
+    /// TODO. There's no way to query the playback's tempo as of yet.
+    const QString playbackTempo = "x1.00";
+
+    this->setWindowTitle(title + " - "
+                         + playbackTimestamp + " "
+                         + playbackTempo + " - "
+                         + "ranssi");
 
     return;
 }

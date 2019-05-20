@@ -21,6 +21,8 @@ MainWindow::MainWindow(const project_c &project) :
 
     ui->wavPlayer->set_wav_data(project.wav);
 
+    this->setWindowTitle(QString::fromStdString(project.title) + " - ranssi");
+
     this->setStyleSheet("#MainWindow { background-color: #1e1e1e; }");
 
     // Set up keyboard shortcuts.

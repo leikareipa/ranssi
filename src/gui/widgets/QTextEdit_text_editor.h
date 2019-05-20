@@ -15,7 +15,7 @@ class TextEditor : public QTextEdit
 
 public:
     TextEditor(QWidget *parent = 0);
-    ~TextEditor();
+    ~TextEditor(void);
 
 protected:
     bool eventFilter(QObject *, QEvent *event);

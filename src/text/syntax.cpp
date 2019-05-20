@@ -2,18 +2,27 @@
  * 2019 Tarpeeksi Hyvae Soft /
  * ranssi
  *
- * Parses the syntax of the given text, and returns a list of metadata spans
- * describing any issues and other such properties of interest of the text's
- * syntax. The text, in this case, is a string of transcription produced by
- * the user; e.g. "Hello there, snowman."
+ * Parses the given text - which is expected to be a string of transcription
+ * produced by the user - and returns a list of metadata describing relevent
+ * syntactical properties of the text.
  *
- * For instance, let's assume that we're given the string "Hello there,snowman."
- * It contains a syntax error: a missing space following the comma after "there".
- * To draw the user's attention to the error, ranssi wants the comma to be drawn
- * in a visually distinct manner. That's where the syntax parser class comes into
- * play - it inspects the string to produce metadata about its syntax; and the
- * metadata can then be fed into a text formatter that embeds the relevant
- * rendering tags into the text.
+ * For instance, given the transcription
+ *
+ *      "Hello there,snowman.",
+ *
+ * the syntax parser would find that there is a missing space following the
+ * comma after "there", and mark it with metadata identifying it as a syntax
+ * error.
+ *
+ * The metadata produced can then be used to e.g. format the string for rendering
+ * such that syntax errors are highlighted.
+ *
+ * Note that only the utterance portion of a transcribed string can be submitted
+ * to syntax-parsing. Given the transcription
+ *
+ *      "Man: Hello there, snowman.",
+ *
+ * the utterance is everything after "Man: ".
  *
  */
 
@@ -22,12 +31,12 @@
 #include "text/syntax.h"
 #include "common.h"
 
-text_syntax_c::text_syntax_c(const QString &text) :
-    text(text)
+text_syntax_c::text_syntax_c(const QString &utteranceText) :
+    utterance(utteranceText)
 {
-    k_assert(!this->text.isEmpty(), "Expected non-empty text for syntax validation.");
+    k_assert(!this->utterance.isEmpty(), "Expected non-empty text for syntax validation.");
 
-    k_assert((this->text.length() == this->text.simplified().length()),
+    k_assert((this->utterance.length() == this->utterance.simplified().length()),
              "Expected text for syntax validation to have been stripped to extraneous whitespace.");
 
     return;
@@ -47,18 +56,19 @@ std::vector<text_metadata_span_s> text_syntax_c::spans(void)
             QRegularExpression r(regexpString);
             k_assert(r.isValid(), "Invalid regular expression.");
 
-            auto matches = r.globalMatch(this->text);
+            auto matches = r.globalMatch(this->utterance);
             while (matches.hasNext())
             {
                 auto match = matches.next();
                 syntaxSpans.push_back(text_metadata_span_s{unsigned(match.capturedStart()),
                                                            unsigned(match.capturedLength()),
-                                                           text_metadata_span_s::metadata_e::error});
+                                                           text_metadata_type_e::formatting,
+                                                           text_metadata_e::formatting_error});
             }
         }
     };
 
-    // Test the text against particualr regular expressions to find incorrect syntax.
+    // Test the text against particular regular expressions to find incorrect syntax.
     // Any spans of text that match any of these expressions will be marked accordingly
     // with metadata.
     /// FIXME. Certain kinds of text, like "...text." get incorrectly marked as errors.

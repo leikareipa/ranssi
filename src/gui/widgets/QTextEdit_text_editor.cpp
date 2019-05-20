@@ -87,7 +87,7 @@ TextEditor::TextEditor(QWidget *parent) : QTextEdit(parent)
     return;
 }
 
-TextEditor::~TextEditor()
+TextEditor::~TextEditor(void)
 {
     return;
 }
@@ -106,30 +106,20 @@ bool TextEditor::eventFilter(QObject *, QEvent *event)
     {
         const QKeyEvent *const keyEvent = static_cast<QKeyEvent*>(event);
 
-        // Validate the current text block, and initialize a new one.
+        // Accept the current text block, and start a new one.
         if (keyEvent->key() == Qt::Key_Enter ||
             keyEvent->key() == Qt::Key_Return)
         {
-            // Validate the text.
-            QString validatedText;
-            {
-                QString text = text_in_block(this->textCursor());
+            const QString transcribedText = text_in_block(this->textCursor());
+            const QString textFormatted = text_formatting_c(transcribedText).formatted();
 
-                const QString speaker = text_elements_c(text).speaker();
-                const QString utterance = text_elements_c(text).utterance();
+            // Don't acceps blocks whose text failed to format.
+            if (textFormatted.isEmpty()) return true;
 
-                // Don't add text that's missing the speaker name and/or utterance text.
-                if (speaker.isEmpty() || utterance.isEmpty()) return true;
-
-                /// TODO. Speaker name formatting.
-                validatedText = (speaker
-                                 + ": "
-                                 + text_formatting_c(utterance).formatted());
-            }
-
-            // Insert the validated text.
+            // Insert the formatted block into the editor, replacing the raw text
+            // the user had entered.
             erase_text_in_block(this->textCursor());
-            insert_text_into_block(validatedText, this->textCursor());
+            insert_text_into_block(textFormatted, this->textCursor());
 
             begin_new_block();
 

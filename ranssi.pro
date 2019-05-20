@@ -33,7 +33,7 @@ HEADERS += src/gui/windows/mainwindow.h \
            src/text/elements.h \
            src/text/formatting.h \
            src/text/syntax.h \
-           src/text/metadata_span.h
+           src/text/metadata.h
 
 FORMS += src/gui/windows/ui/mainwindow.ui
 

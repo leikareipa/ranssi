@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
     /// Temporary.
-    project_c p("Hello there", "test2.wav");
+    project_c p("Test project");
 
     MainWindow w(p);
     w.show();

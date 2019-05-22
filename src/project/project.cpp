@@ -9,16 +9,18 @@
  *
  */
 
+#include <QDebug>
 #include "project/project.h"
+#include "common.h"
 
-project_c::project_c(const std::string title, const std::string wavFile) :
-    title(title),
-    wav(wav_c(wavFile))
+project_c::project_c(const std::string projectName) :
+    name(projectName),
+    wav(wav_c(name + "/" + name + ".wav"))
 {
     return;
 }
 
-project_c::~project_c()
+project_c::~project_c(void)
 {
     return;
 }

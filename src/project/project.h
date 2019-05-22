@@ -12,16 +12,21 @@
 #ifndef PROJECT_H
 #define PROJECT_H
 
+#include <QString>
 #include <vector>
+#include <map>
 #include "wav/wav.h"
 
 class project_c
 {
 public:
-    project_c(const std::string title, const std::string wavFile);
+    project_c(const std::string projectName);
     ~project_c(void);
 
-    const std::string title;
+    // The project's display name.
+    const std::string name;
+
+    // The audio which this project is to transcribe.
     const wav_c wav;
 
 private:

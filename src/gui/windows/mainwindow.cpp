@@ -9,6 +9,8 @@
 #include <QShortcut>
 #include <QDebug>
 #include <QTime>
+#include <QFile>
+#include "gui/widgets/QTextEdit_text_editor.h"
 #include "gui/windows/mainwindow.h"
 #include "project/project.h"
 #include "ui_mainwindow.h"
@@ -24,8 +26,8 @@ MainWindow::MainWindow(const project_c &ranssiProject) :
 
     this->setStyleSheet("#MainWindow { background-color: #1e1e1e; }");
 
-    // Set up the WAV player.
-      {
+    // Set up the WAV player with the project's data.
+    {
         ui->wavPlayer->set_wav_data(project.wav);
 
         connect(&ui->wavPlayer->playback(), &wav_playback_c::pos_changed, this, [this]
@@ -64,6 +66,8 @@ MainWindow::MainWindow(const project_c &ranssiProject) :
         });
     }
 
+    // Make sure the window title reflects the properties of the project we just
+    // loaded in.
     update_window_title();
 
     return;
@@ -78,7 +82,7 @@ MainWindow::~MainWindow(void)
 
 void MainWindow::update_window_title(void)
 {
-    const QString title = QString::fromStdString(project.title);
+    const QString title = QString::fromStdString(project.name);
 
     const QString playbackTimestamp = QTime(0, 0).addMSecs(std::max(0, ui->wavPlayer->playback().pos_ms()))
                                                  .toString("hh:mm:ss");

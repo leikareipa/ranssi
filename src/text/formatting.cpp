@@ -60,7 +60,6 @@ const std::unordered_map<unsigned/*metadata enum*/, QStringList/*opening and clo
     {"<span style='color: lightgray; background-color: brown;'>", "</span>"}},
 };
 
-
 text_formatting_c::text_formatting_c(const QString &transcribedText) :
     transcription(transcribedText)
 {

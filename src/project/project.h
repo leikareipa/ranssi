@@ -20,16 +20,19 @@
 class project_c
 {
 public:
-    project_c(const std::string projectName);
+    project_c(const std::string projectTitle);
     ~project_c(void);
 
     // The project's display name.
-    const std::string name;
+    std::string name(void) const;
 
-    // The audio which this project is to transcribe.
-    const wav_c wav;
+    // The filename (and relative path) of the project's WAV file. The path is
+    // relative to the executable's working directory.
+    std::string wav_filename(void) const;
 
 private:
+    // The project's display name.
+    const std::string _name;
 };
 
 #endif

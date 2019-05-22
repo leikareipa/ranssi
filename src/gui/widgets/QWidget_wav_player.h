@@ -22,7 +22,7 @@ public:
     WavPlayer(QWidget *parent = 0);
     ~WavPlayer();
 
-    void set_wav_data(const wav_c &wavData);
+    void load_wav_data(const std::string &wavFilename);
 
     wav_playback_c& playback(void) const;
 
@@ -33,12 +33,8 @@ protected:
 private:
     void update_waveform_image(void);
 
-    // The raw data of the WAV of which we'll display a waveform.
-    struct
-    {
-        std::vector<int16_t> samples;
-        unsigned sampleRate;
-    } wavData;
+    // The WAV audio the player will play.
+    std::unique_ptr<wav_c> wav;
 
     std::unique_ptr<wav_playback_c> player;
 

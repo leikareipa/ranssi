@@ -31,14 +31,13 @@ WavPlayer::~WavPlayer()
 }
 
 // Assigns the raw audio data of the given WAV to the player.
-void WavPlayer::set_wav_data(const wav_c &wav)
+void WavPlayer::load_wav_data(const std::string &wavFilename)
 {
     if (this->player) this->player->stop();
 
-    this->wavData.samples = wav.samples();
-    this->wavData.sampleRate = wav.sample_rate();
+    this->wav.reset(new wav_c(wavFilename));
 
-    this->player.reset(new wav_playback_c(wav));
+    this->player.reset(new wav_playback_c(*this->wav));
 
     connect(this->player.get(), &wav_playback_c::stopped, this, [this]
     {
@@ -70,7 +69,8 @@ wav_playback_c& WavPlayer::playback() const
 // widget is resized.
 void WavPlayer::update_waveform_image(void)
 {
-    if (this->wavData.samples.empty())
+    if (!this->wav->is_valid() ||
+        this->wav->samples().empty())
     {
         // Assign a null image.
         this->waveformImage = QImage();
@@ -88,10 +88,10 @@ void WavPlayer::update_waveform_image(void)
     // assumes that each bin has more than one sample in it. If there isn't, the
     // resulting image is likely not visually optimal.
     {
-        const unsigned peakSampleValue = *std::max_element(this->wavData.samples.begin(),
-                                                           this->wavData.samples.end(),
+        const unsigned peakSampleValue = *std::max_element(this->wav->samples().begin(),
+                                                           this->wav->samples().end(),
                                                            [](int16_t a, int16_t b){ return abs(a) < abs(b); });
-        const unsigned binWidth = (this->wavData.samples.size() / double(waveformWidth));
+        const unsigned binWidth = (this->wav->samples().size() / double(waveformWidth));
         const double yStep = (waveformHeight / double(peakSampleValue + 1) / 2);
 
         QPainter painter(&this->waveformImage);
@@ -100,10 +100,10 @@ void WavPlayer::update_waveform_image(void)
 
         for (unsigned x = 0; x < waveformWidth; x++)
         {
-            const int binMin = *std::min_element(this->wavData.samples.begin() + (x * binWidth),
-                                                 this->wavData.samples.begin() + ((x+1) * binWidth));
-            const int binMax = *std::max_element(this->wavData.samples.begin() + (x * binWidth),
-                                                 this->wavData.samples.begin() + ((x+1) * binWidth));
+            const int binMin = *std::min_element(this->wav->samples().begin() + (x * binWidth),
+                                                 this->wav->samples().begin() + ((x+1) * binWidth));
+            const int binMax = *std::max_element(this->wav->samples().begin() + (x * binWidth),
+                                                 this->wav->samples().begin() + ((x+1) * binWidth));
 
             // Draw a vertical line between the highest and lowest point on this bin.
             painter.drawLine(x, (binMin * yStep + (waveformHeight / 2)),

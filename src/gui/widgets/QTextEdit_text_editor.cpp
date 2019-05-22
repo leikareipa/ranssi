@@ -181,9 +181,29 @@ void TextEditor::insert_text_into_block(const QString &text, QTextCursor cursor)
     return;
 }
 
+// Saves the contents of the text editor into the given text file. The visual
+// formatting of the text is not saved; and blocks of text will be separated by
+// newlines.
+void TextEditor::save_transcription(const std::string &transcriptionFilename)
+{
+    QFile transcriptionFile(QString::fromStdString(transcriptionFilename));
+    transcriptionFile.open(QIODevice::WriteOnly | QIODevice::Text);
+
+    k_assert(transcriptionFile.isOpen(), "Failed to open the given transcription file for saving.");
+
+    QTextStream output(&transcriptionFile);
+    output.setCodec("utf-8");
+
+    output << this->document()->toPlainText();
+
+    return;
+}
+
 // Given the path to a text file containing a transcription where each utterance
 // is separated by a newline, e.g. "Man: Hello there!\nOther man: Yo.", will insert
-// each of the utterances into the editor as a new block of text.
+// each of the utterances into the editor as a new block of text. Additionally,
+// each block will be run through the syntax checker and appended with relevant
+// visual formatting.
 void TextEditor::load_transcription(const std::string &transcriptionFilename)
 {
     k_assert(this->document()->isEmpty(), "Was asked to initialize the contents of a non-empty text editor.");
@@ -191,7 +211,7 @@ void TextEditor::load_transcription(const std::string &transcriptionFilename)
     QFile transcriptionFile(QString::fromStdString(transcriptionFilename));
     transcriptionFile.open(QIODevice::ReadOnly | QIODevice::Text);
 
-    k_assert(transcriptionFile.isOpen(), "Failed to open the project's transcription file.");
+    k_assert(transcriptionFile.isOpen(), "Failed to open the given transcription file for loading.");
 
     const QStringList paragraphs = QString::fromUtf8(transcriptionFile.readAll()).split("\n");
     for (const auto &paragraph: paragraphs)

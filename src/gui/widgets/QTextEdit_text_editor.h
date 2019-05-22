@@ -19,6 +19,8 @@ public:
 
     void load_transcription(const std::string &transcriptionFilename);
 
+    void save_transcription(const std::string &transcriptionFilename);
+
 protected:
     bool eventFilter(QObject *, QEvent *event);
     void resizeEvent(QResizeEvent *event);

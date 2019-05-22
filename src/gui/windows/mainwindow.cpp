@@ -69,6 +69,11 @@ MainWindow::MainWindow(const project_c &ranssiProject) :
         {
             ui->wavPlayer->playback().toggle_pause();
         });
+
+        connect(keyboardShortcut("ctrl+s"), &QShortcut::activated, [this]
+        {
+            ui->textEdit->save_transcription(project.filenames.transcriptionFile);
+        });
     }
 
     // Make sure the window title reflects the properties of the project we just

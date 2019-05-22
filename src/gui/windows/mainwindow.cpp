@@ -7,6 +7,7 @@
  */
 
 #include <QShortcut>
+#include <QSplitter>
 #include <QDebug>
 #include <QTime>
 #include <QFile>
@@ -39,6 +40,19 @@ MainWindow::MainWindow(const project_c &ranssiProject) :
     // Set up the text editor.
     {
         ui->textEditor->load_transcription(project.filenames.transcriptionFile);
+    }
+
+    // Set up a splitter between the WAV player and text editor; mainly so the
+    // WAV player can be made smaller or larger vertically.
+    {
+        QSplitter *const splitter = new QSplitter(this);
+        splitter->addWidget(ui->wavPlayer);
+        splitter->addWidget(ui->textEditor);
+        splitter->setOrientation(Qt::Vertical);
+        splitter->setStretchFactor(0, 1);
+        splitter->setStretchFactor(1, 1);
+        splitter->setHandleWidth(11);
+        ui->centralWidget->layout()->addWidget(splitter);
     }
 
     // Set up keyboard shortcuts.

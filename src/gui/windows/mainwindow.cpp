@@ -28,12 +28,17 @@ MainWindow::MainWindow(const project_c &ranssiProject) :
 
     // Set up the WAV player with the project's data.
     {
-        ui->wavPlayer->load_wav_data(project.filenames.wav);
+        ui->wavPlayer->load_wav_data(project.filenames.wavFile);
 
         connect(&ui->wavPlayer->playback(), &wav_playback_c::pos_changed, this, [this]
         {
             update_window_title();
         });
+    }
+
+    // Set up the text editor.
+    {
+        ui->textEdit->load_transcription(project.filenames.transcriptionFile);
     }
 
     // Set up keyboard shortcuts.

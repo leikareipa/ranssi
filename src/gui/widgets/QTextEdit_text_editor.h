@@ -17,6 +17,8 @@ public:
     TextEditor(QWidget *parent = 0);
     ~TextEditor(void);
 
+    void load_transcription(const std::string &transcriptionFilename);
+
 protected:
     bool eventFilter(QObject *, QEvent *event);
     void resizeEvent(QResizeEvent *event);

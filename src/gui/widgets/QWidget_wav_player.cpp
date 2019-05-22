@@ -39,18 +39,9 @@ void WavPlayer::load_wav_data(const std::string &wavFilename)
 
     this->player.reset(new wav_playback_c(*this->wav));
 
-    connect(this->player.get(), &wav_playback_c::stopped, this, [this]
-    {
-        this->update();
-    });
-    connect(this->player.get(), &wav_playback_c::started, this, [this]
-    {
-        this->update();
-    });
-    connect(this->player.get(), &wav_playback_c::pos_changed, this, [this]
-    {
-        this->update();
-    });
+    connect(this->player.get(), &wav_playback_c::stopped, this, [this]{ this->update(); });
+    connect(this->player.get(), &wav_playback_c::started, this, [this]{ this->update(); });
+    connect(this->player.get(), &wav_playback_c::pos_changed, this, [this]{ this->update(); });
 
     update_waveform_image();
 

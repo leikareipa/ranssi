@@ -35,6 +35,7 @@
 #include "text/formatting.h"
 #include "text/elements.h"
 #include "text/syntax.h"
+#include "common.h"
 
 // Vertical spacing between individual blocks of text.
 static const unsigned BLOCK_VERTICAL_MARGIN = 20;
@@ -176,6 +177,31 @@ void TextEditor::insert_text_into_block(const QString &text, QTextCursor cursor)
 
     cursor.clearSelection();
     cursor.insertHtml(text);
+
+    return;
+}
+
+// Given the path to a text file containing a transcription where each utterance
+// is separated by a newline, e.g. "Man: Hello there!\nOther man: Yo.", will insert
+// each of the utterances into the editor as a new block of text.
+void TextEditor::load_transcription(const std::string &transcriptionFilename)
+{
+    k_assert(this->document()->isEmpty(), "Was asked to initialize the contents of a non-empty text editor.");
+
+    QFile transcriptionFile(QString::fromStdString(transcriptionFilename));
+    transcriptionFile.open(QIODevice::ReadOnly | QIODevice::Text);
+
+    k_assert(transcriptionFile.isOpen(), "Failed to open the project's transcription file.");
+
+    const QStringList paragraphs = QString::fromUtf8(transcriptionFile.readAll()).split("\n");
+    for (const auto &paragraph: paragraphs)
+    {
+        if (paragraph.isEmpty()) continue;
+
+        insert_text_into_block(text_formatting_c(paragraph).formatted(), this->textCursor());
+
+        begin_new_block();
+    }
 
     return;
 }

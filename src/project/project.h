@@ -31,14 +31,14 @@ public:
     struct filenames_s
     {
         // Name of the file containing the audio to be transcribed in this project.
-        const std::string wav;
+        const std::string wavFile;
 
         // Name of the file containing the user's transcription (so far) of the
         // project's audio. Note that this file only gets updated when the user
         // explicitly saves their transcription to disk, not when the text has
         // been typed into the GUI's text editor but has not yet been exported
         // to disk.
-        const std::string transcription;
+        const std::string transcriptionFile;
     } filenames;
 
 private:

@@ -28,6 +28,7 @@
 
 #include <QTextBlock>
 #include <QTextEdit>
+#include <QMimeData>
 #include <QPainter>
 #include <QDebug>
 #include "gui/widgets/QWidget_text_editor_overlay.h"
@@ -97,6 +98,14 @@ void TextEditor::resizeEvent(QResizeEvent *event)
 {
     emit resized();
     QTextEdit::resizeEvent(event);
+
+    return;
+}
+
+// Strip formatting from text pasted into the editor.
+void TextEditor::insertFromMimeData(const QMimeData *source)
+{
+    QTextEdit::insertPlainText(source->text());
 
     return;
 }

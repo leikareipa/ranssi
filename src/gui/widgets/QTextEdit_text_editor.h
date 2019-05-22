@@ -24,6 +24,7 @@ public:
 protected:
     bool eventFilter(QObject *, QEvent *event);
     void resizeEvent(QResizeEvent *event);
+    void insertFromMimeData(const QMimeData *source);
 
 signals:
     // Emitted when this widget is resized.

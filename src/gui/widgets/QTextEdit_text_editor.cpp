@@ -192,20 +192,30 @@ void TextEditor::insert_text_into_block(const QString &text, QTextCursor cursor)
 
 // Saves the contents of the text editor into the given text file. The visual
 // formatting of the text is not saved; and blocks of text will be separated by
-// newlines.
-void TextEditor::save_transcription(const std::string &transcriptionFilename)
+// newlines. Returns true if saving succeeded; false otherwise.
+bool TextEditor::save_transcription(const std::string &transcriptionFilename)
 {
-    QFile transcriptionFile(QString::fromStdString(transcriptionFilename));
-    transcriptionFile.open(QIODevice::WriteOnly | QIODevice::Text);
+    const QString transcriptionText = this->document()->toPlainText();
 
-    k_assert(transcriptionFile.isOpen(), "Failed to open the given transcription file for saving.");
+    // Save the transcription into the file.
+    {
+        QFile transcriptionFile(QString::fromStdString(transcriptionFilename));
+        transcriptionFile.open(QIODevice::WriteOnly | QIODevice::Text);
 
-    QTextStream output(&transcriptionFile);
-    output.setCodec("utf-8");
+        if (!transcriptionFile.isOpen()) return false;
 
-    output << this->document()->toPlainText();
+        QTextStream output(&transcriptionFile);
+        output.setCodec("utf-8");
+        output << transcriptionText;
+    }
 
-    return;
+    // Verify that the data was saved correctly.
+    {
+        QFile transcriptionFile(QString::fromStdString(transcriptionFilename));
+        transcriptionFile.open(QIODevice::ReadOnly | QIODevice::Text);
+
+        return bool(QString::fromUtf8(transcriptionFile.readAll()) == transcriptionText);
+    }
 }
 
 // Given the path to a text file containing a transcription where each utterance

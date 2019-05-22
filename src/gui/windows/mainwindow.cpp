@@ -38,7 +38,7 @@ MainWindow::MainWindow(const project_c &ranssiProject) :
 
     // Set up the text editor.
     {
-        ui->textEdit->load_transcription(project.filenames.transcriptionFile);
+        ui->textEditor->load_transcription(project.filenames.transcriptionFile);
     }
 
     // Set up keyboard shortcuts.
@@ -72,7 +72,7 @@ MainWindow::MainWindow(const project_c &ranssiProject) :
 
         connect(keyboardShortcut("ctrl+s"), &QShortcut::activated, [this]
         {
-            ui->textEdit->save_transcription(project.filenames.transcriptionFile);
+            ui->textEditor->save_transcription(project.filenames.transcriptionFile);
         });
     }
 

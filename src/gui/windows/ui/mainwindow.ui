@@ -53,7 +53,7 @@
      </widget>
     </item>
     <item>
-     <widget class="TextEditor" name="textEdit" native="true"/>
+     <widget class="TextEditor" name="textEditor" native="true"/>
     </item>
    </layout>
   </widget>

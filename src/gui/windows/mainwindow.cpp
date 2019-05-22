@@ -28,7 +28,7 @@ MainWindow::MainWindow(const project_c &ranssiProject) :
 
     // Set up the WAV player with the project's data.
     {
-        ui->wavPlayer->load_wav_data(project.wav_filename());
+        ui->wavPlayer->load_wav_data(project.filenames.wav);
 
         connect(&ui->wavPlayer->playback(), &wav_playback_c::pos_changed, this, [this]
         {
@@ -82,7 +82,7 @@ MainWindow::~MainWindow(void)
 
 void MainWindow::update_window_title(void)
 {
-    const QString title = QString::fromStdString(project.name());
+    const QString title = QString::fromStdString(project.name);
 
     const QString playbackTimestamp = QTime(0, 0).addMSecs(std::max(0, ui->wavPlayer->playback().pos_ms()))
                                                  .toString("hh:mm:ss");

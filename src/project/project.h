@@ -20,19 +20,29 @@
 class project_c
 {
 public:
-    project_c(const std::string projectTitle);
+    project_c(const std::string projectName);
     ~project_c(void);
 
     // The project's display name.
-    std::string name(void) const;
+    const std::string name;
 
-    // The filename (and relative path) of the project's WAV file. The path is
-    // relative to the executable's working directory.
-    std::string wav_filename(void) const;
+    // Filenames of the project's resource files. The filenames include a path,
+    // which is relative to the executable's working directory.
+    struct filenames_s
+    {
+        // Name of the file containing the audio to be transcribed in this project.
+        const std::string wav;
+
+        // Name of the file containing the user's transcription (so far) of the
+        // project's audio. Note that this file only gets updated when the user
+        // explicitly saves their transcription to disk, not when the text has
+        // been typed into the GUI's text editor but has not yet been exported
+        // to disk.
+        const std::string transcription;
+    } filenames;
 
 private:
-    // The project's display name.
-    const std::string _name;
+    std::string base_file_name(void) const;
 };
 
 #endif

@@ -7,12 +7,12 @@
 #ifndef WAV_PLAYER_H
 #define WAV_PLAYER_H
 
+#include <QFutureWatcher>
 #include <QPointer>
 #include <QWidget>
+#include <QTimer>
 #include <memory>
 #include "wav/playback.h"
-
-class wav_c;
 
 class WavPlayer : public QWidget
 {
@@ -31,16 +31,22 @@ protected:
     void resizeEvent(QResizeEvent *event);
 
 private:
-    void update_waveform_image(void);
-
-    // The WAV audio the player will play.
-    std::unique_ptr<wav_c> wav;
+    void regenerate_waveform_image(const int delay = -1);
 
     std::unique_ptr<wav_playback_c> player;
 
-    // The waveform image we generate from the WAV sample data, and which will
-    // be displayed on this widget.
+    // The WAV audio that the player will play.
+    std::unique_ptr<wav_c> wav;
+
+    // The waveform image we'll generate from the WAV's data.
     QImage waveformImage;
+
+    // For regenerating the waveform image in a separate, non-GUI thread.
+    QFuture<void> waveformRegenThread;
+
+    // If we're asked to regenerate the waveform image while fulfilling a previous
+    // request to do so, we'll use this timer to queue a retry.
+    QTimer waveformRegenCountdown;
 };
 
 #endif

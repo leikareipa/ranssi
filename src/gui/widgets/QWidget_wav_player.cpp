@@ -33,54 +33,16 @@ WavPlayer::WavPlayer(QWidget *parent) :
 {
     this->setStyleSheet("border: none;");
 
-    this->waveformRegenCountdown.setSingleShot(true);
-    connect(&this->waveformRegenCountdown, &QTimer::timeout, this, [this]
+    this->waveformUpdateCountdown.setSingleShot(true);
+    connect(&this->waveformUpdateCountdown, &QTimer::timeout, this, [this]
     {
-        if (!this->waveformRegenThread.isFinished())
+        if (!this->waveformUpdateThread.isFinished())
         {
-            this->waveformRegenCountdown.start(WAVEFORM_REGEN_DELAY);
+            this->waveformUpdateCountdown.start(WAVEFORM_REGEN_DELAY);
             return;
         }
 
-        // Regenerate the waveform image.
-        this->waveformRegenThread = QtConcurrent::run([=]
-        {
-            QImage newWaveformImage(this->size(), QImage::Format_ARGB32);
-
-            newWaveformImage.fill(QColor("transparent"));
-
-            // Draw the waveform as vertical lines on each horizontal bin. Note that this
-            // assumes that each bin has more than one sample in it. If there isn't, the
-            // resulting image is likely not visually optimal.
-            {
-                const unsigned peakSampleValue = *std::max_element(this->wav->samples().begin(),
-                                                                   this->wav->samples().end(),
-                                                                   [](int16_t a, int16_t b){ return abs(a) < abs(b); });
-                const unsigned binWidth = (this->wav->samples().size() / double(newWaveformImage.width()));
-                const double yStep = (newWaveformImage.height() / double(peakSampleValue + 1) / 2);
-
-                QPainter painter(&newWaveformImage);
-
-                painter.setPen(QColor("#6e6e6e"));
-
-                for (int x = 0; x < newWaveformImage.width(); x++)
-                {
-                    const int binMin = *std::min_element(this->wav->samples().begin() + (x * binWidth),
-                                                         this->wav->samples().begin() + ((x+1) * binWidth));
-
-                    const int binMax = *std::max_element(this->wav->samples().begin() + (x * binWidth),
-                                                         this->wav->samples().begin() + ((x+1) * binWidth));
-
-                    // Draw a vertical line between the highest and lowest point on this bin.
-                    painter.drawLine(x, (binMin * yStep + (newWaveformImage.height() / 2)),
-                                     x, (binMax * yStep + (newWaveformImage.height() / 2)));
-                }
-            }
-
-            this->waveformImage = newWaveformImage;
-
-            this->update();
-        });
+        this->waveformUpdateThread = QtConcurrent::run([this]{ update_waveform_image(); });
     });
 
     return;
@@ -90,7 +52,69 @@ WavPlayer::~WavPlayer()
 {
     this->player->stop();
 
-    this->waveformRegenThread.waitForFinished();
+    this->waveformUpdateThread.waitForFinished();
+
+    return;
+}
+
+// Call this to request that the waveform image be updated. The update will
+// commence in some number of milliseconds. Calling this function again before
+// then will reset the timer.
+void WavPlayer::queue_waveform_image_update(void)
+{
+    if (!this->wav->is_valid() ||
+        this->wav->samples().empty())
+    {
+        this->waveformImage = QImage();
+
+        return;
+    }
+
+    this->waveformUpdateCountdown.start(WAVEFORM_REGEN_DELAY);
+
+    return;
+}
+
+// (Re-)generates the image of the waveform that we'll display on this widget.
+// You might call this, for instance, when the WAV data changes, or when the
+// widget is resized.
+void WavPlayer::update_waveform_image(const QSize imageSize)
+{
+    QImage updatedImage((imageSize.width() | imageSize.height())? imageSize : this->size(), QImage::Format_ARGB32);
+
+    updatedImage.fill(QColor("transparent"));
+
+    // Draw the waveform as vertical lines on each horizontal bin. Note that this
+    // assumes that each bin has more than one sample in it. If there isn't, the
+    // resulting image is likely not visually optimal.
+    {
+        const unsigned peakSampleValue = *std::max_element(this->wav->samples().begin(),
+                                                           this->wav->samples().end(),
+                                                           [](int16_t a, int16_t b){ return abs(a) < abs(b); });
+        const unsigned binWidth = (this->wav->samples().size() / double(updatedImage.width()));
+        const double yStep = (updatedImage.height() / double(peakSampleValue + 1) / 2);
+
+        QPainter painter(&updatedImage);
+
+        painter.setPen(QColor("#6e6e6e"));
+
+        for (int x = 0; x < updatedImage.width(); x++)
+        {
+            const int binMin = *std::min_element(this->wav->samples().begin() + (x * binWidth),
+                                                 this->wav->samples().begin() + ((x+1) * binWidth));
+
+            const int binMax = *std::max_element(this->wav->samples().begin() + (x * binWidth),
+                                                 this->wav->samples().begin() + ((x+1) * binWidth));
+
+            // Draw a vertical line between the highest and lowest point on this bin.
+            painter.drawLine(x, (binMin * yStep + (updatedImage.height() / 2)),
+                             x, (binMax * yStep + (updatedImage.height() / 2)));
+        }
+    }
+
+    this->waveformImage = updatedImage;
+
+    this->update();
 
     return;
 }
@@ -108,7 +132,13 @@ void WavPlayer::load_wav_data(const std::string &wavFilename)
     connect(this->player.get(), &wav_playback_c::started, this, [this]{ this->update(); });
     connect(this->player.get(), &wav_playback_c::pos_changed, this, [this]{ this->update(); });
 
-    regenerate_waveform_image(0);
+    // Since generating an image of the WAV's waveform may take a few seconds,
+    // give the user a low-res version of it, initially.
+    update_waveform_image(this->size() / 4);
+
+    // Then queue up a re-generation of the waveform image in full resolution in a
+    // non-GUI thread.
+    queue_waveform_image_update();
 
     return;
 }
@@ -118,25 +148,6 @@ wav_playback_c& WavPlayer::playback() const
     k_assert(this->player, "Tried to access the WAV player before it had been initialized.");
 
     return *this->player;
-}
-
-// (Re-)generates the image of the waveform that we'll display on this widget.
-// You might call this, for instance, when the WAV data changes, or when the
-// widget is resized.
-void WavPlayer::regenerate_waveform_image(const int delay)
-{
-    if (!this->wav->is_valid() ||
-        this->wav->samples().empty())
-    {
-        this->waveformImage = QImage();
-
-        return;
-    }
-
-    // Queue a regeneration of the waveform.
-    this->waveformRegenCountdown.start(delay < 0? WAVEFORM_REGEN_DELAY : delay);
-
-    return;
 }
 
 void WavPlayer::paintEvent(QPaintEvent *)
@@ -175,7 +186,7 @@ void WavPlayer::paintEvent(QPaintEvent *)
 
 void WavPlayer::resizeEvent(QResizeEvent *event)
 {
-    regenerate_waveform_image();
+    queue_waveform_image_update();
 
     QWidget::resizeEvent(event);
 

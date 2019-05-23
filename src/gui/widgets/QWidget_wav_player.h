@@ -31,7 +31,9 @@ protected:
     void resizeEvent(QResizeEvent *event);
 
 private:
-    void regenerate_waveform_image(const int delay = -1);
+    void queue_waveform_image_update(void);
+
+    void update_waveform_image(const QSize imageSize = QSize(0, 0));
 
     std::unique_ptr<wav_playback_c> player;
 
@@ -42,11 +44,11 @@ private:
     QImage waveformImage;
 
     // For regenerating the waveform image in a separate, non-GUI thread.
-    QFuture<void> waveformRegenThread;
+    QFuture<void> waveformUpdateThread;
 
     // If we're asked to regenerate the waveform image while fulfilling a previous
     // request to do so, we'll use this timer to queue a retry.
-    QTimer waveformRegenCountdown;
+    QTimer waveformUpdateCountdown;
 };
 
 #endif

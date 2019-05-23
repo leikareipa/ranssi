@@ -14,11 +14,12 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
+    MainWindow w;
+    w.show();
+
     /// Temporary.
     project_c p("Test project");
-
-    MainWindow w(p);
-    w.show();
+    w.set_project(&p);
 
     return a.exec();
 }

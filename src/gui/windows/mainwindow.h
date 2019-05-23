@@ -24,8 +24,10 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(const project_c& ranssiProject);
+    explicit MainWindow(void);
     ~MainWindow(void);
+
+    void set_project(const project_c *const project);
 
 private:
     void update_window_title(void);
@@ -36,7 +38,7 @@ private:
     std::unordered_map<std::string/*QKeySequence string*/, QShortcut*> keyboardShortcuts;
 
     // The transcription project the user is now working on.
-    const project_c &project;
+    const project_c *project = nullptr;
 };
 
 #endif

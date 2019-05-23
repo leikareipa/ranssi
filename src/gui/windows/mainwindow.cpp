@@ -18,29 +18,13 @@
 #include "wav/playback.h"
 #include "common.h"
 
-MainWindow::MainWindow(const project_c &ranssiProject) :
+MainWindow::MainWindow(void) :
     QMainWindow(nullptr),
-    ui(new Ui::MainWindow),
-    project(ranssiProject)
+    ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
     this->setStyleSheet("#MainWindow { background-color: #1e1e1e; }");
-
-    // Set up the WAV player with the project's data.
-    {
-        ui->wavPlayer->load_wav_data(project.filenames.wavFile);
-
-        connect(&ui->wavPlayer->playback(), &wav_playback_c::pos_changed, this, [this]
-        {
-            update_window_title();
-        });
-    }
-
-    // Set up the text editor.
-    {
-        ui->textEditor->load_transcription(project.filenames.transcriptionFile);
-    }
 
     // Set up a splitter between the WAV player and text editor; mainly so the
     // WAV player can be made smaller or larger vertically.
@@ -86,13 +70,12 @@ MainWindow::MainWindow(const project_c &ranssiProject) :
 
         connect(keyboardShortcut("ctrl+s"), &QShortcut::activated, [this]
         {
-            ui->textEditor->save_transcription(project.filenames.transcriptionFile);
+            if (this->project)
+            {
+                ui->textEditor->save_transcription(this->project->filenames.transcriptionFile);
+            }
         });
     }
-
-    // Make sure the window title reflects the properties of the project we just
-    // loaded in.
-    update_window_title();
 
     return;
 }
@@ -104,14 +87,41 @@ MainWindow::~MainWindow(void)
     return;
 }
 
+void MainWindow::set_project(const project_c *const project)
+{
+    this->project = project;
+
+    if (this->project)
+    {
+        ui->wavPlayer->load_wav_data(this->project->filenames.wavFile);
+        ui->textEditor->load_transcription(this->project->filenames.transcriptionFile);
+
+        connect(&ui->wavPlayer->playback(), &wav_playback_c::pos_changed, this, [this]
+        {
+            update_window_title();
+        });
+    }
+
+    update_window_title();
+
+    return;
+}
+
 void MainWindow::update_window_title(void)
 {
-    const QString title = QString::fromStdString(project.name);
+    if (!this->project)
+    {
+        this->setWindowTitle("ranssi");
+
+        return;
+    }
+
+    const QString title = QString::fromStdString(this->project->name);
 
     const QString playbackTimestamp = QTime(0, 0).addMSecs(std::max(0, ui->wavPlayer->playback().pos_ms()))
                                                  .toString("hh:mm:ss");
 
-    /// TODO. There's no way to query the playback's tempo as of yet.
+    /// TODO. There's no way to query the playback's true tempo as of yet.
     const QString playbackTempo = "x1.00";
 
     this->setWindowTitle(title + " - "

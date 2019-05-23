@@ -62,7 +62,8 @@ WavPlayer::~WavPlayer()
 // then will reset the timer.
 void WavPlayer::queue_waveform_image_update(void)
 {
-    if (!this->wav->is_valid() ||
+    if (!this->wav ||
+        !this->wav->is_valid() ||
         this->wav->samples().empty())
     {
         this->waveformImage = QImage();
@@ -134,7 +135,7 @@ void WavPlayer::load_wav_data(const std::string &wavFilename)
 
     // Since generating an image of the WAV's waveform may take a few seconds,
     // give the user a low-res version of it, initially.
-    update_waveform_image(this->size() / 4);
+    update_waveform_image(this->size() / 6);
 
     // Then queue up a re-generation of the waveform image in full resolution in a
     // non-GUI thread.

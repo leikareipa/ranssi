@@ -27,8 +27,6 @@ TextEditorOverlay::TextEditorOverlay(TextEditor *textEditorWidget) :
     // don't want it to steal the edit widget's mouse interaction.
     this->setAttribute(Qt::WA_TransparentForMouseEvents, true);
 
-    this->setFont(textEditorWidget->font());
-
     return;
 }
 
@@ -40,6 +38,8 @@ TextEditorOverlay::~TextEditorOverlay(void)
 void TextEditorOverlay::paintEvent(QPaintEvent *)
 {
     if (textEditor.isNull()) return;
+
+    this->setFont(textEditor->font());
 
     QPainter painter(this);
 

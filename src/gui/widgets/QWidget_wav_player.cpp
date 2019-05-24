@@ -89,9 +89,9 @@ void WavPlayer::update_waveform_image(const QSize imageSize)
     // assumes that each bin has more than one sample in it. If there isn't, the
     // resulting image is likely not visually optimal.
     {
-        const unsigned peakSampleValue = *std::max_element(this->wav->samples().begin(),
-                                                           this->wav->samples().end(),
-                                                           [](int16_t a, int16_t b){ return abs(a) < abs(b); });
+        const unsigned peakSampleValue = std::abs(*std::max_element(this->wav->samples().begin(),
+                                                                    this->wav->samples().end(),
+                                                                    [](int16_t a, int16_t b){ return std::abs(a) < std::abs(b); }));
         const unsigned binWidth = (this->wav->samples().size() / double(updatedImage.width()));
         const double yStep = (updatedImage.height() / double(peakSampleValue + 1) / 2);
 

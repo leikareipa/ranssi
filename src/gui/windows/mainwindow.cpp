@@ -139,7 +139,10 @@ void MainWindow::open_project(const QString &projectDirectory)
     if (!this->project->isValid)
     {
         this->project.release();
+
         this->tarp->put_on();
+
+        update_window_title();
 
         qCritical() << "Invalid project directory:" << projectDirectory;
 

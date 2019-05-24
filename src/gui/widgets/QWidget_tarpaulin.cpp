@@ -64,7 +64,7 @@ void Tarpaulin::paintEvent(QPaintEvent *)
     /// Temporary styling.
     painter.fillRect(this->rect(), QColor("#404040"));
     painter.setPen(QColor("#afafaf"));
-    painter.drawText(this->rect(), Qt::AlignCenter, "Drag in:\n\n\n"
+    painter.drawText(this->rect(), Qt::AlignCenter, "Drag in:\n\n"
                                                     "A folder\nto open its project\n\n"
                                                     "An audio file\nto create a new project\n\n");
 

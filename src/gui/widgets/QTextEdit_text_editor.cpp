@@ -29,6 +29,7 @@
 #include <QTextBlock>
 #include <QTextEdit>
 #include <QMimeData>
+#include <QFileInfo>
 #include <QPainter>
 #include <QDebug>
 #include "gui/widgets/QWidget_text_editor_overlay.h"
@@ -225,6 +226,11 @@ bool TextEditor::save_transcription(const QString &transcriptionFilename)
 // visual formatting.
 void TextEditor::load_transcription(const QString &transcriptionFilename)
 {
+    if (!QFileInfo(transcriptionFilename).exists()) return;
+
+    /// TODO. For now, bail if we try to overwrite existing text. In the future,
+    /// we'll likely have a system that queries the user on whether they want to
+    /// overwrite or not.
     k_assert(this->document()->isEmpty(), "Was asked to initialize the contents of a non-empty text editor.");
 
     QFile transcriptionFile(transcriptionFilename);

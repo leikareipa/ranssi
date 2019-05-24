@@ -23,6 +23,10 @@ public:
     project_c(const QString &projectDirectory);
     ~project_c(void);
 
+    static QString base_file_path(const QString &projectName, const QString &projectDirectory = "");
+
+    static QString create_project(const QString &sourceFilePath);
+
     // The project's display name.
     const QString name;
 

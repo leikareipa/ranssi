@@ -21,7 +21,8 @@ SOURCES += src/main.cpp\
            src/text/elements.cpp \
            src/text/formatting.cpp \
            src/text/syntax.cpp \
-           src/gui/widgets/QWidget_tarpaulin.cpp
+           src/gui/widgets/QWidget_tarpaulin.cpp \
+           src/wav/conversion.cpp
 
 HEADERS += src/gui/windows/mainwindow.h \
            src/gui/widgets/QTextEdit_text_editor.h \
@@ -35,7 +36,8 @@ HEADERS += src/gui/windows/mainwindow.h \
            src/text/formatting.h \
            src/text/syntax.h \
            src/text/metadata.h \
-           src/gui/widgets/QWidget_tarpaulin.h
+           src/gui/widgets/QWidget_tarpaulin.h \
+           src/wav/conversion.h
 
 FORMS += src/gui/windows/ui/mainwindow.ui
 

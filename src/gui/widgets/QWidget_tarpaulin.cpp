@@ -13,7 +13,6 @@
  */
 
 #include <QDragEnterEvent>
-#include <QMimeDatabase>
 #include <QFileInfo>
 #include <QMimeData>
 #include <QPainter>
@@ -26,13 +25,9 @@ Tarpaulin::Tarpaulin(QWidget *parent) :
 {
     this->setAcceptDrops(true);
 
-    // Set up the font.
-    {
-        QFont f = parent->font();
-        f.setPointSize(11);
-
-        this->setFont(f);
-    }
+    QFont f = parent->font();
+    f.setPointSize(11);
+    this->setFont(f);
 
     return;
 }
@@ -83,10 +78,10 @@ void Tarpaulin::dragEnterEvent(QDragEnterEvent *event)
     return;
 }
 
-// If the user dropped an audio file on the tarp, assume it's a sound file with
-// which the user wants to initialize a new project. Otherwise, if the user
-// dropped a directory, assume it's a ranssi project that the user wants to open.
-// If multiple files are dropped in at once, all but the first are ignored.
+// If the user dropped a file on the tarp, assume it's a sound file with which
+// the user wants to initialize a new project. Otherwise, if the user dropped
+// a directory, assume it's a ranssi project that the user wants to open. If
+// multiple files are dropped in at once, all but the first are ignored.
 void Tarpaulin::dropEvent(QDropEvent *event)
 {
     k_assert(event->mimeData()->hasUrls(), "Expected all accepted drops to contain URLs.");
@@ -97,15 +92,7 @@ void Tarpaulin::dropEvent(QDropEvent *event)
     {
         emit open_project(firstFile);
     }
-    else
-    {
-        const auto mimeType = QMimeDatabase().mimeTypeForFile(firstFile);
-
-        if (mimeType.isValid() && mimeType.name().startsWith("audio/"))
-        {
-            emit create_project(firstFile);
-        }
-    }
+    else emit create_project(firstFile);
 
     return;
 }

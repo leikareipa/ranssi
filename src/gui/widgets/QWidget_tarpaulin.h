@@ -35,8 +35,8 @@ signals:
     // Emitted when the user has dragged a ranssi project directory onto the tarp.
     void open_project(const QString &directoryName);
 
-    // Emitted when the user has dragged an audio file onto the tarp.
-    void create_project(const QString &audioFilePath);
+    // Emitted when the user has dragged a file onto the tarp.
+    void create_project(const QString &sourceFilePath);
 
 protected:
     void paintEvent(QPaintEvent *);

@@ -123,10 +123,12 @@ void WavPlayer::update_waveform_image(const QSize imageSize)
 // Assigns the raw audio data of the given WAV to the player.
 void WavPlayer::load_wav_data(const QString &wavFilename)
 {
+    k_assert(QFileInfo(wavFilename).exists(),
+             "Was asked to load a WAV file into the WAV player, but the given file doesn't exist.");
+
     if (this->player) this->player->stop();
 
     this->wav.reset(new wav_c(wavFilename));
-
     this->player.reset(new wav_playback_c(*this->wav));
 
     connect(this->player.get(), &wav_playback_c::stopped, this, [this]{ this->update(); });

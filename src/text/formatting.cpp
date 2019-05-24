@@ -88,6 +88,8 @@ QString text_formatting_c::formatted_speaker_name(const QString &speakerName)
 {
     QString formattedName = speakerName;
 
+    /// Temporary. In the future, the list of valid speaker names will come from
+    /// somewhere else.
     const std::set<QString> validSpeakerNames = {"this", "that", "other"};
 
     // Valid speaker names are to be shown in bold; invalid ones as erroneous.
@@ -131,8 +133,6 @@ QString text_formatting_c::formatted_utterance(const QString &utterance)
     {
         for (int i = 0; i <= utterance.length(); i++)
         {
-            // There might be multiple tags for a given character index; we just
-            // join them together without spaces.
             if (tags.find(i) != tags.end()) formattedUtterance += tags[i].join("");
 
             if (i < utterance.length()) formattedUtterance += utterance[i];

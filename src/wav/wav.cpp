@@ -10,7 +10,7 @@
 #include "common.h"
 
 // Loads in the audio data from the given WAV file.
-wav_c::wav_c(const std::string wavFilename) :
+wav_c::wav_c(const QString &wavFilename) :
     filename(wavFilename),
     audioData(load_audio_data())
 {
@@ -60,7 +60,7 @@ bool wav_c::is_valid(void) const
 // this function.
 std::pair<std::vector<int16_t>, int> wav_c::load_audio_data(void) const
 {
-    k_assert(!this->filename.empty(), "Was asked to load the contents of an unnamed WAV file. Can't do that.");
+    k_assert(!this->filename.isEmpty(), "Was asked to load the contents of an unnamed WAV file. Can't do that.");
 
     // The discrete samples we load from the WAV file and return to our caller.
     std::vector<int16_t> samples;
@@ -79,7 +79,7 @@ std::pair<std::vector<int16_t>, int> wav_c::load_audio_data(void) const
     };
 
     // Open the WAV file for reading.
-    QFile file(QString::fromStdString(this->filename));
+    QFile file(this->filename);
     if (!file.open(QIODevice::ReadOnly))
     {
         oops("Could not open the WAV file for reading.");

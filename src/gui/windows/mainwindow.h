@@ -9,9 +9,11 @@
 
 #include <QMainWindow>
 #include <unordered_map>
+#include <memory>
 #include "wav/playback.h"
 
 class wav_playback_c;
+class Tarpaulin;
 class project_c;
 class QShortcut;
 
@@ -27,18 +29,23 @@ public:
     explicit MainWindow(void);
     ~MainWindow(void);
 
-    void set_project(const project_c *const project);
+    void open_project(const QString &projectDirectory);
+
+protected:
+    void resizeEvent(QResizeEvent *);
 
 private:
     void update_window_title(void);
 
     Ui::MainWindow *ui;
 
+    Tarpaulin *tarp = nullptr;
+
     // The keyboard shortcuts assigned for this window.
     std::unordered_map<std::string/*QKeySequence string*/, QShortcut*> keyboardShortcuts;
 
-    // The transcription project the user is now working on.
-    const project_c *project = nullptr;
+    // The transcription project opened for editing in the window.
+    std::unique_ptr<const project_c> project;
 };
 
 #endif

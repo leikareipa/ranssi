@@ -50,7 +50,7 @@ WavPlayer::WavPlayer(QWidget *parent) :
 
 WavPlayer::~WavPlayer()
 {
-    this->player->stop();
+    if (this->player) this->player->stop();
 
     this->waveformUpdateThread.waitForFinished();
 
@@ -121,7 +121,7 @@ void WavPlayer::update_waveform_image(const QSize imageSize)
 }
 
 // Assigns the raw audio data of the given WAV to the player.
-void WavPlayer::load_wav_data(const std::string &wavFilename)
+void WavPlayer::load_wav_data(const QString &wavFilename)
 {
     if (this->player) this->player->stop();
 

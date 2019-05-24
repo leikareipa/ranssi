@@ -193,13 +193,13 @@ void TextEditor::insert_text_into_block(const QString &text, QTextCursor cursor)
 // Saves the contents of the text editor into the given text file. The visual
 // formatting of the text is not saved; and blocks of text will be separated by
 // newlines. Returns true if saving succeeded; false otherwise.
-bool TextEditor::save_transcription(const std::string &transcriptionFilename)
+bool TextEditor::save_transcription(const QString &transcriptionFilename)
 {
     const QString transcriptionText = this->document()->toPlainText();
 
     // Save the transcription into the file.
     {
-        QFile transcriptionFile(QString::fromStdString(transcriptionFilename));
+        QFile transcriptionFile(transcriptionFilename);
         transcriptionFile.open(QIODevice::WriteOnly | QIODevice::Text);
 
         if (!transcriptionFile.isOpen()) return false;
@@ -211,7 +211,7 @@ bool TextEditor::save_transcription(const std::string &transcriptionFilename)
 
     // Verify that the data was saved correctly.
     {
-        QFile transcriptionFile(QString::fromStdString(transcriptionFilename));
+        QFile transcriptionFile(transcriptionFilename);
         transcriptionFile.open(QIODevice::ReadOnly | QIODevice::Text);
 
         return bool(QString::fromUtf8(transcriptionFile.readAll()) == transcriptionText);
@@ -223,11 +223,11 @@ bool TextEditor::save_transcription(const std::string &transcriptionFilename)
 // each of the utterances into the editor as a new block of text. Additionally,
 // each block will be run through the syntax checker and appended with relevant
 // visual formatting.
-void TextEditor::load_transcription(const std::string &transcriptionFilename)
+void TextEditor::load_transcription(const QString &transcriptionFilename)
 {
     k_assert(this->document()->isEmpty(), "Was asked to initialize the contents of a non-empty text editor.");
 
-    QFile transcriptionFile(QString::fromStdString(transcriptionFilename));
+    QFile transcriptionFile(transcriptionFilename);
     transcriptionFile.open(QIODevice::ReadOnly | QIODevice::Text);
 
     k_assert(transcriptionFile.isOpen(), "Failed to open the given transcription file for loading.");

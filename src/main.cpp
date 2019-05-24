@@ -17,9 +17,5 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.show();
 
-    /// Temporary.
-    project_c p("Test project");
-    w.set_project(&p);
-
     return a.exec();
 }

@@ -22,7 +22,7 @@ public:
     WavPlayer(QWidget *parent = 0);
     ~WavPlayer();
 
-    void load_wav_data(const std::string &wavFilename);
+    void load_wav_data(const QString &wavFilename);
 
     wav_playback_c& playback(void) const;
 

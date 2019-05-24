@@ -17,9 +17,9 @@ public:
     TextEditor(QWidget *parent = 0);
     ~TextEditor(void);
 
-    void load_transcription(const std::string &transcriptionFilename);
+    void load_transcription(const QString &transcriptionFilename);
 
-    bool save_transcription(const std::string &transcriptionFilename);
+    bool save_transcription(const QString &transcriptionFilename);
 
 protected:
     bool eventFilter(QObject *, QEvent *event);

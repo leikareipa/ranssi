@@ -7,15 +7,15 @@
 #ifndef WAV_H
 #define WAV_H
 
+#include <QString>
 #include <vector>
-#include <string>
 
 // Loads a WAV (mono, 16-bit samples) file into memory as discrete samples, and
 // provides access to said sample data.
 class wav_c
 {
 public:
-    wav_c(const std::string wavFilename);
+    wav_c(const QString &wavFilename);
     ~wav_c(void);
 
     const std::vector<int16_t>& samples(void) const;
@@ -34,7 +34,7 @@ private:
     std::pair<std::vector<int16_t>, int> load_audio_data(void) const;
 
     // The name of the WAV file from which the audio data were loaded.
-    const std::string filename;
+    const QString filename;
 
     // Discrete samples and the audio's original sample rate.
     const std::pair<std::vector<int16_t>/*samples*/, int/*sample rate*/> audioData;

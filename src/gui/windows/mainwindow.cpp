@@ -12,6 +12,7 @@
 #include <QTime>
 #include <QFile>
 #include "gui/widgets/QTextEdit_text_editor.h"
+#include "gui/widgets/QWidget_tarpaulin.h"
 #include "gui/windows/mainwindow.h"
 #include "project/project.h"
 #include "ui_mainwindow.h"
@@ -25,6 +26,41 @@ MainWindow::MainWindow(void) :
     ui->setupUi(this);
 
     this->setStyleSheet("#MainWindow { background-color: #1e1e1e; }");
+
+    // Set up the tarp.
+    {
+        this->tarp = new Tarpaulin(this);
+
+        connect(tarp, &Tarpaulin::on, this, [this]
+        {
+            ui->wavPlayer->setEnabled(false);
+            ui->wavPlayer->setVisible(false);
+
+            ui->textEditor->setEnabled(false);
+            ui->textEditor->setVisible(false);
+        });
+
+        connect(tarp, &Tarpaulin::off, this, [this]
+        {
+            ui->wavPlayer->setEnabled(true);
+            ui->wavPlayer->setVisible(true);
+
+            ui->textEditor->setEnabled(true);
+            ui->textEditor->setVisible(true);
+        });
+
+        connect(tarp, &Tarpaulin::create_project, this, [this](const QString &audioFileName)
+        {
+            /// TODO.
+
+            (void)audioFileName;
+        });
+
+        connect(tarp, &Tarpaulin::open_project, this, [this](const QString &projectDirectory)
+        {
+            this->open_project(projectDirectory);
+        });
+    }
 
     // Set up a splitter between the WAV player and text editor; mainly so the
     // WAV player can be made smaller or larger vertically.
@@ -77,6 +113,8 @@ MainWindow::MainWindow(void) :
         });
     }
 
+    this->tarp->put_on();
+
     return;
 }
 
@@ -87,22 +125,40 @@ MainWindow::~MainWindow(void)
     return;
 }
 
-void MainWindow::set_project(const project_c *const project)
+void MainWindow::resizeEvent(QResizeEvent *)
 {
-    this->project = project;
+    this->tarp->move(0, 0);
+    this->tarp->resize(this->size());
 
-    if (this->project)
+    return;
+}
+
+// Opens the project contained in the given directory.
+void MainWindow::open_project(const QString &projectDirectory)
+{
+    this->project.reset(new project_c(projectDirectory));
+
+    if (!this->project->isValid)
     {
-        ui->wavPlayer->load_wav_data(this->project->filenames.wavFile);
-        ui->textEditor->load_transcription(this->project->filenames.transcriptionFile);
+        this->project.release();
+        this->tarp->put_on();
 
-        connect(&ui->wavPlayer->playback(), &wav_playback_c::pos_changed, this, [this]
-        {
-            update_window_title();
-        });
+        qWarning() << "Invalid project directory:" << projectDirectory;
+
+        return;
     }
 
+    ui->wavPlayer->load_wav_data(this->project->filenames.wavFile);
+    ui->textEditor->load_transcription(this->project->filenames.transcriptionFile);
+
+    connect(&ui->wavPlayer->playback(), &wav_playback_c::pos_changed, this, [this]
+    {
+        update_window_title();
+    });
+
     update_window_title();
+
+    this->tarp->pull_back();
 
     return;
 }
@@ -116,7 +172,7 @@ void MainWindow::update_window_title(void)
         return;
     }
 
-    const QString title = QString::fromStdString(this->project->name);
+    const QString title = this->project->name;
 
     const QString playbackTimestamp = QTime(0, 0).addMSecs(std::max(0, ui->wavPlayer->playback().pos_ms()))
                                                  .toString("hh:mm:ss");

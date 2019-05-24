@@ -11,6 +11,7 @@
 #include <QDebug>
 #include <QTime>
 #include <QFile>
+#include <QDir>
 #include "gui/widgets/QTextEdit_text_editor.h"
 #include "gui/widgets/QWidget_tarpaulin.h"
 #include "gui/windows/mainwindow.h"
@@ -49,11 +50,9 @@ MainWindow::MainWindow(void) :
             ui->textEditor->setVisible(true);
         });
 
-        connect(tarp, &Tarpaulin::create_project, this, [this](const QString &audioFileName)
+        connect(tarp, &Tarpaulin::create_project, this, [this](const QString &audioFilePath)
         {
-            /// TODO.
-
-            (void)audioFileName;
+            create_project(audioFilePath);
         });
 
         connect(tarp, &Tarpaulin::open_project, this, [this](const QString &projectDirectory)
@@ -140,7 +139,7 @@ void MainWindow::open_project(const QString &projectDirectory)
         this->project.release();
         this->tarp->put_on();
 
-        qWarning() << "Invalid project directory:" << projectDirectory;
+        qCritical() << "Invalid project directory:" << projectDirectory;
 
         return;
     }
@@ -158,6 +157,38 @@ void MainWindow::open_project(const QString &projectDirectory)
     this->tarp->pull_back();
 
     return;
+}
+
+// Creates a new project with the given audio file. Returns true if the project
+// was successfully created; false otherwise.
+bool MainWindow::create_project(const QString &audioFilePath)
+{
+    if (!QFileInfo(audioFilePath).exists())
+    {
+        qCritical() << "Failed to open the audio file" << audioFilePath;
+
+        return false;
+    }
+
+    const QString projectName = QFileInfo(audioFilePath).baseName();
+
+    if (QDir(projectName).exists())
+    {
+        qCritical() << "A project by the name" << projectName << "already exists in the current working directory.";
+
+        return false;
+    }
+
+    if (!QDir().mkdir(projectName))
+    {
+        qCritical() << "Failed to create a directory for project:" << projectName;
+
+        return false;
+    }
+
+    /// Convert the audio file to WAV.
+
+    return true;
 }
 
 void MainWindow::save_current_project(void)

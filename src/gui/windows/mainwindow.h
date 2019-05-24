@@ -37,6 +37,8 @@ protected:
 private:
     void save_current_project(void);
 
+    bool create_project(const QString &audioFilePath);
+
     void update_window_title(void);
 
     Ui::MainWindow *ui;

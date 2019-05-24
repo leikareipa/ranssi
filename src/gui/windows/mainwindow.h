@@ -35,6 +35,8 @@ protected:
     void resizeEvent(QResizeEvent *);
 
 private:
+    void save_current_project(void);
+
     void update_window_title(void);
 
     Ui::MainWindow *ui;

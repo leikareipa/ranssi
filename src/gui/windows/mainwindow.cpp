@@ -58,7 +58,7 @@ MainWindow::MainWindow(void) :
 
         connect(tarp, &Tarpaulin::open_project, this, [this](const QString &projectDirectory)
         {
-            this->open_project(projectDirectory);
+            open_project(projectDirectory);
         });
     }
 
@@ -106,10 +106,7 @@ MainWindow::MainWindow(void) :
 
         connect(keyboardShortcut("ctrl+s"), &QShortcut::activated, [this]
         {
-            if (this->project)
-            {
-                ui->textEditor->save_transcription(this->project->filenames.transcriptionFile);
-            }
+            save_current_project();
         });
     }
 
@@ -159,6 +156,15 @@ void MainWindow::open_project(const QString &projectDirectory)
     update_window_title();
 
     this->tarp->pull_back();
+
+    return;
+}
+
+void MainWindow::save_current_project(void)
+{
+    if (!this->project) return;
+
+    ui->textEditor->save_transcription(this->project->filenames.transcriptionFile);
 
     return;
 }

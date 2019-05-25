@@ -15,11 +15,13 @@
 #include "project/project.h"
 #include "wav/conversion.h"
 #include "common.h"
+#include "csv.h"
 
 project_c::project_c(const QString &projectDirectory) :
     name(projectDirectory.split("/").last()),
     filenames({base_file_path(name, projectDirectory) + ".wav" /*WAV file*/,
-               base_file_path(name, projectDirectory) + ".txt" /*transcription file*/,}),
+               base_file_path(name, projectDirectory) + ".txt" /*transcription file*/,
+               base_file_path(name, projectDirectory) + ".speakers" /*speaker names*/,}),
     isValid(bool(!projectDirectory.isEmpty() && QFileInfo(filenames.wavFile).exists()))
 {
     return;
@@ -28,6 +30,20 @@ project_c::project_c(const QString &projectDirectory) :
 project_c::~project_c(void)
 {
     return;
+}
+
+// Loads from file the list of speakers associated with this project.
+QStringList project_c::speaker_names(void) const
+{
+    QStringList speakerNames;
+
+    QList<QStringList> speakerRows = csv_parse_c(this->filenames.speakersFile).rows();
+    for (const auto &row: speakerRows)
+    {
+        speakerNames << row;
+    }
+
+    return speakerNames;
 }
 
 // The base path of the resource files of a project by the given name. For instance,

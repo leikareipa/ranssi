@@ -38,6 +38,7 @@
 #include "text/elements.h"
 #include "text/syntax.h"
 #include "common.h"
+#include "csv.h"
 
 // Vertical spacing between individual blocks of text.
 static const unsigned BLOCK_VERTICAL_MARGIN = 20;
@@ -136,9 +137,59 @@ bool TextEditor::eventFilter(QObject *, QEvent *event)
 
             return true;
         }
+
+        // Autocompletion.
+        if (keyEvent->key() == Qt::Key_Tab)
+        {
+            const QString currentText = text_in_block(this->textCursor());
+
+            // Speaker name autocomplete.
+            if (!this->speakerNames.empty() &&
+                (is_cursor_inside_speaker_name_element() || text_elements_c(currentText).utterance().isEmpty()))
+            {
+                const QString &nextSpeakerName = this->speakerNames[(this->speakerNameIdx++ % this->speakerNames.size())];
+
+                erase_text_in_block(this->textCursor());
+                insert_text_into_block((nextSpeakerName + ": "), this->textCursor());
+            }
+            // Autocompletion of an impartial keyword (when the cursor is inside
+            // the utterance element).
+            else if (is_cursor_inside_utterance_element())
+            {
+                qDebug() << "utterance completion";
+            }
+
+            return true;
+        }
     }
 
     return false;
+}
+
+// Returns true if the text cursor is currently inside the text block's utterance
+// element.
+bool TextEditor::is_cursor_inside_utterance_element(void)
+{
+    const QString currentText = text_in_block(this->textCursor());
+    const int speakerNameLen = currentText.indexOf(":");
+
+    // If didn't find a speaker name.
+    if (speakerNameLen < 0) return false;
+
+    return (this->textCursor().positionInBlock() > (speakerNameLen + 1)); // +1 to exclude the space that follows a speaker name and ":".
+}
+
+// Returns true if the text cursor is currently inside the text block's speaker
+// name element.
+bool TextEditor::is_cursor_inside_speaker_name_element(void)
+{
+    const QString currentText = text_in_block(this->textCursor());
+    const int speakerNameLen = currentText.indexOf(":");
+
+    // If didn't find a speaker name.
+    if (speakerNameLen < 0) return true;
+
+    return (this->textCursor().positionInBlock() < speakerNameLen);
 }
 
 // Finalizes the current text block (e.g. by assigning to it the vertical block
@@ -191,6 +242,45 @@ void TextEditor::insert_text_into_block(const QString &text, QTextCursor cursor)
     return;
 }
 
+bool TextEditor::save_speaker_names(const QString &speakersFilename)
+{
+    // Save the speaker names into the file.
+    {
+        QFile speakersFile(speakersFilename);
+        speakersFile.open(QIODevice::WriteOnly | QIODevice::Text);
+
+        if (!speakersFile.isOpen())
+        {
+            qCritical() << "Failed to open the project's speaker names file" << speakersFilename;
+
+            return false;
+        }
+
+        QTextStream output(&speakersFile);
+        output.setCodec("utf-8");
+
+        for (const auto &speaker: this->speakerNames)
+        {
+            output << "{" << speaker << "},";
+        }
+    }
+
+    // Verify that the data was saved correctly.
+    {
+        const auto savedSpeakerNameRows = csv_parse_c(speakersFilename).rows();
+
+        if ((savedSpeakerNameRows.count() != 1) ||
+            (savedSpeakerNameRows.at(0) != this->speakerNames))
+        {
+            qCritical() << "Found incorrect data saved to disk for the project's speaker names file" << speakersFilename;
+
+            return false;
+        }
+    }
+
+    return true;
+}
+
 // Saves the contents of the text editor into the given text file. The visual
 // formatting of the text is not saved; and blocks of text will be separated by
 // newlines. Returns true if saving succeeded; false otherwise.
@@ -203,7 +293,12 @@ bool TextEditor::save_transcription(const QString &transcriptionFilename)
         QFile transcriptionFile(transcriptionFilename);
         transcriptionFile.open(QIODevice::WriteOnly | QIODevice::Text);
 
-        if (!transcriptionFile.isOpen()) return false;
+        if (!transcriptionFile.isOpen())
+        {
+            qCritical() << "Failed to open the project's transcription file" << transcriptionFilename;
+
+            return false;
+        }
 
         QTextStream output(&transcriptionFile);
         output.setCodec("utf-8");
@@ -215,8 +310,15 @@ bool TextEditor::save_transcription(const QString &transcriptionFilename)
         QFile transcriptionFile(transcriptionFilename);
         transcriptionFile.open(QIODevice::ReadOnly | QIODevice::Text);
 
-        return bool(QString::fromUtf8(transcriptionFile.readAll()) == transcriptionText);
+        if (QString::fromUtf8(transcriptionFile.readAll()) != transcriptionText)
+        {
+            qCritical() << "Found incorrect data saved to disk for the project's transcription file" << transcriptionFilename;
+
+            return false;
+        }
     }
+
+    return true;
 }
 
 // Given the path to a text file containing a transcription where each utterance
@@ -247,6 +349,13 @@ void TextEditor::load_transcription(const QString &transcriptionFilename)
 
         begin_new_block();
     }
+
+    return;
+}
+
+void TextEditor::set_speaker_names(const QStringList &speakerNames)
+{
+    this->speakerNames = speakerNames;
 
     return;
 }

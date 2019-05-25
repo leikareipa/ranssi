@@ -27,6 +27,8 @@ public:
 
     static QString create_project(const QString &sourceFilePath);
 
+    QStringList speaker_names(void) const;
+
     // The project's display name.
     const QString name;
 
@@ -43,6 +45,10 @@ public:
         // been typed into the GUI's text editor but has not yet been exported
         // to disk.
         const QString transcriptionFile;
+
+        // Name of the file containing a list of speakers appearing in this
+        // project's audio and transcription. Used for e.g. name autocomplete.
+        const QString speakersFile;
     } filenames;
 
     // True if this is a valid project; false otherwise. A project might get

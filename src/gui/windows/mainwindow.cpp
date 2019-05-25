@@ -150,6 +150,8 @@ void MainWindow::open_project(const QString &projectDirectory)
     }
 
     ui->wavPlayer->load_wav_data(this->project->filenames.wavFile);
+
+    ui->textEditor->set_speaker_names(this->project->speaker_names());
     ui->textEditor->load_transcription(this->project->filenames.transcriptionFile);
 
     connect(&ui->wavPlayer->playback(), &wav_playback_c::pos_changed, this, [this]
@@ -169,6 +171,7 @@ void MainWindow::save_current_project(void)
     if (!this->project) return;
 
     ui->textEditor->save_transcription(this->project->filenames.transcriptionFile);
+    ui->textEditor->save_speaker_names(this->project->filenames.speakersFile);
 
     return;
 }

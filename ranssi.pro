@@ -37,7 +37,8 @@ HEADERS += src/gui/windows/mainwindow.h \
            src/text/syntax.h \
            src/text/metadata.h \
            src/gui/widgets/QWidget_tarpaulin.h \
-           src/wav/conversion.h
+           src/wav/conversion.h \
+           src/csv.h
 
 FORMS += src/gui/windows/ui/mainwindow.ui
 

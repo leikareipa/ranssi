@@ -21,6 +21,10 @@ public:
 
     bool save_transcription(const QString &transcriptionFilename);
 
+    bool save_speaker_names(const QString &speakersFilename);
+
+    void set_speaker_names(const QStringList &speakerNames);
+
 protected:
     bool eventFilter(QObject *, QEvent *event);
     void resizeEvent(QResizeEvent *event);
@@ -38,6 +42,15 @@ private:
     void insert_text_into_block(const QString &text, QTextCursor cursor);
 
     void begin_new_block(void);
+
+    bool is_cursor_inside_speaker_name_element(void);
+
+    bool is_cursor_inside_utterance_element(void);
+
+    // The names of the speakers appearing in this transcription. Will be used
+    // for e.g. name autocomplete.
+    QStringList speakerNames;
+    unsigned speakerNameIdx = 0;
 };
 
 #endif

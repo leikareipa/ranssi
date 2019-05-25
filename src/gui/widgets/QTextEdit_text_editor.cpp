@@ -138,24 +138,42 @@ bool TextEditor::eventFilter(QObject *, QEvent *event)
             return true;
         }
 
-        // Autocompletion.
+        // String autocomplete.
         if (keyEvent->key() == Qt::Key_Tab)
         {
             const QString currentText = text_in_block(this->textCursor());
 
             // Speaker name autocomplete.
-            if (!this->speakerNames.empty() &&
-                (is_cursor_inside_speaker_name_element() || text_elements_c(currentText).utterance().isEmpty()))
+            if (is_cursor_inside_speaker_name_element())
             {
-                const QString &nextSpeakerName = this->speakerNames[(this->speakerNameIdx++ % this->speakerNames.size())];
+                if (!this->speakerNames.empty())
+                {
+                    QString completedSpeakerName;
 
-                erase_text_in_block(this->textCursor());
-                insert_text_into_block((nextSpeakerName + ": "), this->textCursor());
+                    // If the user has typed in some text, find its closest matching
+                    // speaker name.
+                    const QStringList matchingNames =
+                            (currentText.simplified().isEmpty()? QStringList()
+                                                               : this->speakerNames.filter(currentText.simplified(), Qt::CaseInsensitive));
+
+                    if (matchingNames.count())
+                    {
+                        completedSpeakerName = matchingNames.at(0);
+                    }
+                    else
+                    {
+                        completedSpeakerName = this->speakerNames[(this->speakerNameIdx++ % this->speakerNames.count())];
+                    }
+
+                    /// TODO. Don't replace all the text, just the speaker name part.
+                    erase_text_in_block(this->textCursor());
+                    insert_text_into_block((completedSpeakerName + ": "), this->textCursor());
+                }
             }
-            // Autocompletion of an impartial keyword (when the cursor is inside
-            // the utterance element).
             else if (is_cursor_inside_utterance_element())
             {
+                /// TODO.
+
                 qDebug() << "utterance completion";
             }
 
@@ -164,6 +182,27 @@ bool TextEditor::eventFilter(QObject *, QEvent *event)
     }
 
     return false;
+}
+
+// Returns true if the text cursor is currently inside the text block's speaker
+// name element.
+bool TextEditor::is_cursor_inside_speaker_name_element(void)
+{
+    const QString currentText = text_in_block(this->textCursor());
+    const int speakerNameLen = currentText.indexOf(":");
+
+    // If we didn't find a speaker name. We'll assume that whatever text is there
+    // is of the speaker name element.
+    if (speakerNameLen < 0) return true;
+
+    // If there's nothing but whitespace after the speaker name, interpret for
+    // convenience that it's all part of the speaker name element.
+    if (currentText.right(currentText.length() - currentText.indexOf(":") - 1).trimmed().isEmpty())
+    {
+        return true;
+    }
+
+    return (this->textCursor().positionInBlock() <= (speakerNameLen + 1)); // +2 to include the ": " that follows a speaker name.
 }
 
 // Returns true if the text cursor is currently inside the text block's utterance
@@ -176,20 +215,7 @@ bool TextEditor::is_cursor_inside_utterance_element(void)
     // If didn't find a speaker name.
     if (speakerNameLen < 0) return false;
 
-    return (this->textCursor().positionInBlock() > (speakerNameLen + 1)); // +1 to exclude the space that follows a speaker name and ":".
-}
-
-// Returns true if the text cursor is currently inside the text block's speaker
-// name element.
-bool TextEditor::is_cursor_inside_speaker_name_element(void)
-{
-    const QString currentText = text_in_block(this->textCursor());
-    const int speakerNameLen = currentText.indexOf(":");
-
-    // If didn't find a speaker name.
-    if (speakerNameLen < 0) return true;
-
-    return (this->textCursor().positionInBlock() < speakerNameLen);
+    return (this->textCursor().positionInBlock() > speakerNameLen);
 }
 
 // Finalizes the current text block (e.g. by assigning to it the vertical block

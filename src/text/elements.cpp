@@ -36,11 +36,10 @@ text_elements_c::text_elements_c(const QString &text) :
     return;
 }
 
-// Returns a null QString if a speaker name was not found.
 QString text_elements_c::speaker(void) const
 {
     // If no speaker name found.
-    if (this->text.indexOf(":") == -1) return QString();
+    if (this->text.indexOf(":") < 0) return QString();
 
     return this->text.left(this->text.indexOf(":")).simplified();
 }

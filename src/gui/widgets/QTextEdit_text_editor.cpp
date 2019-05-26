@@ -236,7 +236,8 @@ bool TextEditor::eventFilter(QObject *, QEvent *event)
     return false;
 }
 
-// Gets called when the position of the text cursor changes.
+// Gets called when the position of the text cursor changes, i.e. on the
+// cursorPositionChanged signal.
 void TextEditor::process_cursor_movement(void)
 {
     // If the cursor moved from one block to another, force an update on the
@@ -250,7 +251,10 @@ void TextEditor::process_cursor_movement(void)
     // when the cursor leaves the block.
     if (this->previousTextCursor.blockNumber() != this->textCursor().block().blockNumber())
     {
-        inhibit_widget_signals(this);
+        // The block's text is about to get modified in an automated fashion,
+        // which may move the cursor and thus fire another cursorPositionChanged
+        // signal. Processing that signal is unnecessary, so we'll inhibit it.
+        inhibit_widget_signals_in_block_scope(this);
 
         update_block_formatting(this->previousTextCursor);
 

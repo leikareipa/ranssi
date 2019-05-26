@@ -31,6 +31,6 @@ private:
     QWidget *const widget;
     const bool previousBlockStatus;
 };
-#define inhibit_widget_signals(widget) inhibit_widget_signals_c block______(widget);
+#define inhibit_widget_signals_in_block_scope(widget) inhibit_widget_signals_c block______(widget);
 
 #endif

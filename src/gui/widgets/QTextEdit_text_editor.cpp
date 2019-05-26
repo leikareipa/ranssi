@@ -155,6 +155,20 @@ bool TextEditor::eventFilter(QObject *, QEvent *event)
             return true;
         }
 
+        if (keyEvent->key() == Qt::Key_Backspace)
+        {
+            // If backspace is pressed while at the beginning of a block, all of
+            // the current block's text would be moved to the end of the preceding
+            // block. We don't want that, so we'll prevent it by eating away (and
+            // thus ignoring) the event. But note that if the current block contains
+            // no text, we'll allow backspace to remove that block completely.
+            if ((this->textCursor().positionInBlock() == 0) &&
+                !text_in_block(this->textCursor()).isEmpty())
+            {
+                return true;
+            }
+        }
+
         // String autocomplete.
         if (keyEvent->key() == Qt::Key_Tab)
         {

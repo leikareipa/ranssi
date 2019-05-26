@@ -26,6 +26,7 @@
  *
  */
 
+#include <QGuiApplication>
 #include <QTextBlock>
 #include <QTextEdit>
 #include <QMimeData>
@@ -123,6 +124,9 @@ bool TextEditor::eventFilter(QObject *, QEvent *event)
             keyEvent->key() == Qt::Key_Return)
         {
             const QString transcribedText = text_in_block(this->textCursor());
+
+            if (transcribedText.isEmpty()) return true;
+
             const QString textFormatted = text_formatting_c(transcribedText).formatted();
 
             // Don't acceps blocks whose text failed to format.
@@ -133,7 +137,20 @@ bool TextEditor::eventFilter(QObject *, QEvent *event)
             erase_text_in_block(this->textCursor());
             insert_text_into_block(textFormatted, this->textCursor());
 
-            begin_new_block();
+            // If the current block is the last one in the document, append a
+            // new block after it.
+            if (this->textCursor().blockNumber() == (this->document()->blockCount()-1) ||
+                (QGuiApplication::keyboardModifiers() & Qt::ControlModifier))
+            {
+                begin_new_block();
+            }
+            // Otherwise, just move the cursor to the beginning of the next block.
+            else
+            {
+                auto cursor = this->textCursor();
+                cursor.movePosition(QTextCursor::NextBlock);
+                this->setTextCursor(cursor);
+            }
 
             return true;
         }
@@ -218,22 +235,12 @@ bool TextEditor::is_cursor_inside_utterance_element(void)
     return (this->textCursor().positionInBlock() > speakerNameLen);
 }
 
-// Finalizes the current text block (e.g. by assigning to it the vertical block
-// margin), and moves the cursor to a new block.
 void TextEditor::begin_new_block(void)
 {
-    QTextBlock currentBlock = this->document()->findBlockByLineNumber(this->textCursor().blockNumber());
+    QTextBlockFormat blockFormat = QTextBlockFormat();
+    blockFormat.setTopMargin(BLOCK_VERTICAL_MARGIN);
 
-    // Separate each block with vertical whitespace.
-    QTextBlockFormat currentBlockFormat = currentBlock.blockFormat();
-    currentBlockFormat.setTopMargin(BLOCK_VERTICAL_MARGIN);
-
-    // Prevent any styling of the previous block from carrying over to the next one.
-    QTextCharFormat currentBlockCharFormat = currentBlock.charFormat();
-    currentBlockCharFormat = TextEditor::document()->findBlockByNumber(0).charFormat();
-
-    this->textCursor().insertBlock(currentBlockFormat, currentBlockCharFormat);
-    this->setTextCursor(textCursor());
+    this->textCursor().insertBlock(blockFormat);
 
     return;
 }

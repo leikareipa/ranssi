@@ -26,6 +26,7 @@
  *
  */
 
+#include <QTextDocumentFragment>
 #include <QGuiApplication>
 #include <QTextBlock>
 #include <QTextEdit>
@@ -38,6 +39,7 @@
 #include "text/formatting.h"
 #include "text/elements.h"
 #include "text/syntax.h"
+#include "gui/utility.h"
 #include "common.h"
 #include "csv.h"
 
@@ -115,6 +117,16 @@ void TextEditor::insertFromMimeData(const QMimeData *source)
     return;
 }
 
+void TextEditor::strip_block_formatting(QTextCursor cursor)
+{
+    const QString strippedText = QTextDocumentFragment::fromHtml(cursor.block().text()).toPlainText();
+
+    erase_text_in_block(cursor);
+    insert_text_into_block(strippedText, cursor);
+
+    return;
+}
+
 // Performs syntax-checking and certain actions of clean-up (like removing trailing
 // spaces) on the given cursor's text block, replacing the block's text with the
 // modified version. Returns false if there was no text to operate on (i.e. an empty
@@ -128,7 +140,6 @@ bool TextEditor::update_block_formatting(QTextCursor cursor)
     if (formattedText.isEmpty()) return false;
 
     erase_text_in_block(cursor);
-
     insert_text_into_block(formattedText, cursor);
 
     return true;
@@ -229,10 +240,21 @@ bool TextEditor::eventFilter(QObject *, QEvent *event)
 void TextEditor::process_cursor_movement(void)
 {
     // If the cursor moved from one block to another, force an update on the
-    // previous block's formatting.
+    // previous block's formatting, and remove all formatting from the current
+    // block. The latter is done as a bit of a kludge, since if you have e.g.
+    // a span of bold text (like the speaker name) and begin typing new text
+    // within that span, all the new text you produce will be in bold also, and
+    // there'll be no way for you to make it not bold, except by locating the
+    // cursor outside of the block to force a formatting update on it. Stripping
+    // away the formatting gets around that, and the formatting is restored
+    // when the cursor leaves the block.
     if (this->previousTextCursor.blockNumber() != this->textCursor().block().blockNumber())
     {
+        inhibit_widget_signals(this);
+
         update_block_formatting(this->previousTextCursor);
+
+        strip_block_formatting(this->textCursor());
     }
 
     this->previousTextCursor = this->textCursor();

@@ -52,6 +52,8 @@ private:
 
     bool update_block_formatting(QTextCursor cursor);
 
+    void strip_block_formatting(QTextCursor cursor);
+
     // The names of the speakers appearing in this transcription. Will be used
     // for e.g. name autocomplete.
     QStringList speakerNames;

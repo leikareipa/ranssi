@@ -95,5 +95,7 @@ void Tarpaulin::dropEvent(QDropEvent *event)
     }
     else emit create_project(firstFile);
 
+    event->acceptProposedAction();
+
     return;
 }

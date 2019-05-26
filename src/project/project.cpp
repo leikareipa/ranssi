@@ -35,6 +35,10 @@ project_c::~project_c(void)
 // Loads from file the list of speakers associated with this project.
 QStringList project_c::speaker_names(void) const
 {
+    // The speakers file is optional for a project; if the file doesn't exist,
+    // we just don't return any names.
+    if (!QFileInfo(this->filenames.speakersFile).exists()) return {};
+
     QStringList speakerNames;
 
     QList<QStringList> speakerRows = csv_parse_c(this->filenames.speakersFile).rows();

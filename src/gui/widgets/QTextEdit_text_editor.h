@@ -7,6 +7,7 @@
 #ifndef TEXT_EDITOR_H
 #define TEXT_EDITOR_H
 
+#include <QTextCursor>
 #include <QTextEdit>
 
 class TextEditor : public QTextEdit
@@ -47,10 +48,18 @@ private:
 
     bool is_cursor_inside_utterance_element(void);
 
+    void process_cursor_movement(void);
+
+    bool update_block_formatting(QTextCursor cursor);
+
     // The names of the speakers appearing in this transcription. Will be used
     // for e.g. name autocomplete.
     QStringList speakerNames;
     unsigned speakerNameIdx = 0;
+
+    // When the text cursor moves, this stores the previous cursor. Used to detect
+    // when the cursor has moved from one block to another.
+    QTextCursor previousTextCursor;
 };
 
 #endif

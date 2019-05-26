@@ -60,7 +60,7 @@ TextEditor::TextEditor(QWidget *parent) : QTextEdit(parent)
             overlay->update();
         };
 
-        connect(this, &TextEditor::cursorPositionChanged, this, [=]{ update_overlay(); });
+        connect(this, &TextEditor::cursorPositionChanged, this, [=]{ process_cursor_movement(); update_overlay(); });
         connect(this, &TextEditor::textChanged, this, [=]{ update_overlay(); });
         connect(this, &TextEditor::resized, this, [=]{ update_overlay(); });
     }
@@ -83,6 +83,8 @@ TextEditor::TextEditor(QWidget *parent) : QTextEdit(parent)
         f.setStyleStrategy(QFont::NoAntialias);
         this->setFont(f);
     }
+
+    this->previousTextCursor = this->textCursor();
 
     // Tab will be used for word completion etc.
     this->setTabChangesFocus(false);
@@ -113,6 +115,25 @@ void TextEditor::insertFromMimeData(const QMimeData *source)
     return;
 }
 
+// Performs syntax-checking and certain actions of clean-up (like removing trailing
+// spaces) on the given cursor's text block, replacing the block's text with the
+// modified version. Returns false if there was no text to operate on (i.e. an empty
+// block) or if the modified text turned out empty; otherwise returns true.
+bool TextEditor::update_block_formatting(QTextCursor cursor)
+{
+    const QString blockText = text_in_block(cursor);
+    if (blockText.isEmpty()) return false;
+
+    const QString formattedText = text_formatting_c(blockText).formatted();
+    if (formattedText.isEmpty()) return false;
+
+    erase_text_in_block(cursor);
+
+    insert_text_into_block(formattedText, cursor);
+
+    return true;
+}
+
 bool TextEditor::eventFilter(QObject *, QEvent *event)
 {
     if (event->type() == QEvent::KeyPress)
@@ -123,19 +144,8 @@ bool TextEditor::eventFilter(QObject *, QEvent *event)
         if (keyEvent->key() == Qt::Key_Enter ||
             keyEvent->key() == Qt::Key_Return)
         {
-            const QString transcribedText = text_in_block(this->textCursor());
-
-            if (transcribedText.isEmpty()) return true;
-
-            const QString textFormatted = text_formatting_c(transcribedText).formatted();
-
-            // Don't acceps blocks whose text failed to format.
-            if (textFormatted.isEmpty()) return true;
-
-            // Insert the formatted block into the editor, replacing the raw text
-            // the user had entered.
-            erase_text_in_block(this->textCursor());
-            insert_text_into_block(textFormatted, this->textCursor());
+            // Ignore this event if the block is not valid.
+            if (!update_block_formatting(this->textCursor())) return true;
 
             // If the current block is the last one in the document, append a
             // new block after it.
@@ -213,6 +223,21 @@ bool TextEditor::eventFilter(QObject *, QEvent *event)
     }
 
     return false;
+}
+
+// Gets called when the position of the text cursor changes.
+void TextEditor::process_cursor_movement(void)
+{
+    // If the cursor moved from one block to another, force an update on the
+    // previous block's formatting.
+    if (this->previousTextCursor.blockNumber() != this->textCursor().block().blockNumber())
+    {
+        update_block_formatting(this->previousTextCursor);
+    }
+
+    this->previousTextCursor = this->textCursor();
+
+    return;
 }
 
 // Returns true if the text cursor is currently inside the text block's speaker

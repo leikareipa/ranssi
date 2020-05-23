@@ -1,7 +1,9 @@
 # ranssi
 A minimalistic, to-the-point transcription app.
 
-This project is currently in the process of lift-off. More information will be provided in the near future.
+Ranssi originated as a tool I wrote for myself for doing transcription. The repo here represents a rewrite of that tool's codebase.
+
+The project is currently hibernating, but will be woken up at some point.
 
 #### Features
 - *(Coming)*
@@ -9,7 +11,7 @@ This project is currently in the process of lift-off. More information will be p
 - *(Coming)*
 
 ![](images/screenshots/pre/ranssi-pre.png)
-A screenshot of the pre-release version of ranssi. The codebase in this repo is a re-write of the pre-release, and will come to look much like the above as the re-write progresses.
+A screenshot of the original ranssi. The rewrite will come to look much like this.
 
 # How to use
 *(Coming)*
